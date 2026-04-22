@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "graph": "Grafik",
+    "settings": "Ayarlar",
+    "title": "Kaza Namazlarim"
+  },
+  "times": {
+    "fajr": "Sabah",
+    "sunrise": "Güneş",
+    "dhuhr": "Öğle",
+    "asr": "İkindi",
+    "maghrib": "Akşam",
+    "isha": "Yatsi"
+  }
+}

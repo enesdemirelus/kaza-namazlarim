@@ -1,0 +1,16 @@
+{
+  "nav": {
+    "home": "Home",
+    "graph": "Graph",
+    "settings": "Settings",
+    "title": "My Missed Prayers"
+  },
+  "times": {
+    "fajr": "Fajr",
+    "sunrise": "Sunrise",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
+  }
+}
