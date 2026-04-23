@@ -5,6 +5,7 @@ import "../globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import NavBar from "@/app/components/NavBar";
+import BottomNav from "@/app/components/BottomNav";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 
@@ -57,7 +58,7 @@ export default async function RootLayout({
           document.documentElement.classList.add(t);
         }catch(e){}}());
       `}</Script>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col pb-20 md:pb-0">
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
@@ -67,6 +68,7 @@ export default async function RootLayout({
           >
             <NavBar />
             {children}
+            <BottomNav />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

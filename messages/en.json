@@ -6,11 +6,18 @@
     "title": "My Missed Prayers"
   },
   "times": {
+    "title": "Prayer Times",
+    "nextPrayer": "Up next",
+    "now": "Pray Now",
     "fajr": "Fajr",
     "sunrise": "Sunrise",
     "dhuhr": "Dhuhr",
     "asr": "Asr",
     "maghrib": "Maghrib",
     "isha": "Isha"
+  },
+  "inform": {
+    "title": "Prayer Times Calculation",
+    "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
   }
 }

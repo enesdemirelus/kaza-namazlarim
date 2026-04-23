@@ -3,14 +3,21 @@
     "home": "Ana Sayfa",
     "graph": "Grafik",
     "settings": "Ayarlar",
-    "title": "Kaza Namazlarim"
+    "title": "Kaza Namazlarım"
   },
   "times": {
+    "title": "Namaz Vakitleri",
+    "nextPrayer": "Sıradaki",
+    "now": "Mevcut Namaz",
     "fajr": "Sabah",
     "sunrise": "Güneş",
     "dhuhr": "Öğle",
     "asr": "İkindi",
     "maghrib": "Akşam",
-    "isha": "Yatsi"
+    "isha": "Yatsı"
+  },
+  "inform": {
+    "title": "Namaz Vakitleri Hesaplaması",
+    "description": "Namaz vakitleri, şu anlık sadece Kuzey Amerika bölgesi hesaplamalarını kullanıyor. Farklı tür hesaplamalar yakında eklenecektir"
   }
 }

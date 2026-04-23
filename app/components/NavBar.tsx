@@ -72,15 +72,15 @@ export default function NavBar() {
   }
 
   return (
-    <header className="px-6 pt-4">
-      <div className="w-full px-8 h-16 flex items-center justify-between rounded-xl border bg-card shadow-[var(--shadow-card)]">
+    <header className="px-4 pt-4 md:px-6">
+      <div className="w-full px-4 md:px-8 h-14 md:h-16 flex items-center justify-between rounded-xl border bg-card shadow-(--shadow-card)">
         {/* Logo */}
-        <Link href="/" className="text-lg font-semibold tracking-tight">
+        <Link href="/" className="text-base md:text-lg font-semibold tracking-tight">
           {t("title")}
         </Link>
 
-        {/* Nav */}
-        <NavigationMenu>
+        {/* Nav — hidden on mobile */}
+        <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
             <NavigationMenuItem>
               <NavigationMenuLink
