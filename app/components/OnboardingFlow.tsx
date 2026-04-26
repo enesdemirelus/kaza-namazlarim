@@ -56,7 +56,7 @@ function StepSignIn({ onBack }: { onBack: () => void }) {
         <p className="text-sm text-muted-foreground">{t("signInSubtitle")}</p>
       </div>
       <div className="w-full flex justify-center">
-        <SignIn forceRedirectUrl="/onboarding/post-auth" signUpForceRedirectUrl="/onboarding/post-auth" />
+        <SignIn routing="hash" forceRedirectUrl="/onboarding/post-auth" signUpForceRedirectUrl="/onboarding/post-auth" />
       </div>
       <button
         onClick={onBack}
