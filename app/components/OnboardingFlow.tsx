@@ -249,15 +249,12 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     const saved = sessionStorage.getItem("knm-onboarding-step");
-    if (saved) {
-      sessionStorage.removeItem("knm-onboarding-step");
-      setStep(Number(saved) as 1 | 2);
-    } else {
-      setStep(1);
-    }
+    sessionStorage.removeItem("knm-onboarding-step");
+    const parsed = Number(saved);
+    setStep(parsed === 1 || parsed === 2 ? parsed : 1);
   }, []);
 
-  if (step === null) return null;
+  if (step === null) return <div className="min-h-svh" />;
 
   return (
     <div className="min-h-svh flex flex-col items-center justify-center py-10">
