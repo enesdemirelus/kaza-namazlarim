@@ -1,11 +1,8 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 import Link from "next/link";
-import TR from "country-flag-icons/react/3x2/TR";
-import GB from "country-flag-icons/react/3x2/GB";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -15,12 +12,8 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { ModeToggle } from "./ModeToggle";
-
-const locales = [
-  { code: "tr", label: "TR", Flag: TR },
-  { code: "en", label: "EN", Flag: GB },
-] as const;
+import { UserButton } from "@clerk/nextjs";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 // ---------------------------------------------------------------------------
 // DROPDOWN EXAMPLE — copy this block to add a dropdown nav item.
@@ -63,13 +56,6 @@ const locales = [
 
 export default function NavBar() {
   const t = useTranslations("nav");
-  const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
-
-  function switchLocale(code: string) {
-    router.replace(pathname, { locale: code });
-  }
 
   return (
     <header className="px-4 pt-4 md:px-6">
@@ -96,7 +82,7 @@ export default function NavBar() {
                 asChild
                 className={navigationMenuTriggerStyle()}
               >
-                <Link href="/graph">{t("graph")}</Link>
+                <Link href="/stats">{t("stats")}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -113,21 +99,14 @@ export default function NavBar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Language toggle */}
-          {(() => {
-            const next = locales.find((l) => l.code !== locale) ?? locales[0];
-            return (
-              <button
-                onClick={() => switchLocale(next.code)}
-                className="text-sm font-medium px-4 py-2 rounded-md border hover:bg-accent transition-colors flex items-center justify-center"
-              >
-                <next.Flag className="h-4 w-auto rounded-[2px]" />
-                <span className="sr-only">Switch to {next.label}</span>
-              </button>
-            );
-          })()}
-
-          <ModeToggle />
+          <LocaleSwitcher />
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-8 h-8",
+              },
+            }}
+          />
         </div>
       </div>
     </header>

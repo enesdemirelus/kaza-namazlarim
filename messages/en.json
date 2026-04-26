@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "graph": "Graph",
+    "stats": "Stats",
     "settings": "Settings",
     "title": "My Missed Prayers"
   },
@@ -16,8 +16,53 @@
     "maghrib": "Maghrib",
     "isha": "Isha"
   },
+  "actions": {
+    "title": "Manage Prayers",
+    "subtitle": "Add or remove missed prayers",
+    "addOne": "Add Missed Prayer",
+    "addBatch": "Add Batch",
+    "removeOne": "Remove Missed Prayer",
+    "removeBatch": "Remove Batch"
+  },
+  "missed": {
+    "title": "Missed Prayers",
+    "subtitle": "Prayers to make up",
+    "total": "total missed",
+    "all": "All",
+    "monthly": "Month",
+    "yearly": "Year"
+  },
   "inform": {
     "title": "Prayer Times Calculation",
     "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
+  },
+  "signIn": {
+    "welcome": "Welcome back",
+    "subtitle": "Sign in to track your missed prayers"
+  },
+  "stats": {
+    "comingSoon": "Stats coming soon."
+  },
+  "settings": {
+    "accountTitle": "Account",
+    "accountSubtitle": "Manage your profile and sign-out.",
+    "manageAccount": "Manage Account",
+    "signOut": "Sign Out",
+    "appearanceTitle": "Appearance",
+    "appearanceSubtitle": "Choose your preferred colour scheme.",
+    "light": "Light",
+    "dark": "Dark",
+    "accentTitle": "Accent Colour",
+    "accentSubtitle": "Personalise the app with your favourite colour.",
+    "green": "Green",
+    "teal": "Teal",
+    "cyan": "Cyan",
+    "blue": "Blue",
+    "indigo": "Indigo",
+    "violet": "Violet",
+    "purple": "Purple",
+    "pink": "Pink",
+    "rose": "Rose",
+    "orange": "Orange"
   }
 }

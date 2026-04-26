@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes } from "adhan";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -17,6 +17,35 @@ const PRAYERS: PrayerKey[] = [
   "maghrib",
   "isha",
 ];
+
+const COORDS_STORAGE_KEY = "knm-prayer-coords";
+
+function readStoredCoords(): Coordinates | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem(COORDS_STORAGE_KEY);
+    if (!raw) return null;
+    const { latitude, longitude } = JSON.parse(raw) as {
+      latitude: number;
+      longitude: number;
+    };
+    if (typeof latitude !== "number" || typeof longitude !== "number")
+      return null;
+    return new Coordinates(latitude, longitude);
+  } catch {
+    return null;
+  }
+}
+
+function storeCoords(coords: Coordinates) {
+  sessionStorage.setItem(
+    COORDS_STORAGE_KEY,
+    JSON.stringify({
+      latitude: coords.latitude,
+      longitude: coords.longitude,
+    }),
+  );
+}
 
 const ICONS: Record<PrayerKey, React.ElementType> = {
   fajr: Sunrise,
@@ -54,8 +83,18 @@ function Skeleton() {
 export default function PrayerTimesWidget() {
   const t = useTranslations("times");
   const locale = useLocale();
-  const [times, setTimes] = useState<PrayerTimes | null>(null);
+  const [coords, setCoords] = useState<Coordinates | null>(null);
   const [now, setNow] = useState(new Date());
+
+  const y = now.getFullYear();
+  const mo = now.getMonth();
+  const d = now.getDate();
+
+  const times = useMemo(() => {
+    if (!coords) return null;
+    const day = new Date(y, mo, d);
+    return new PrayerTimes(coords, day, CalculationMethod.Turkey());
+  }, [coords, y, mo, d]);
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString(locale, {
@@ -65,15 +104,20 @@ export default function PrayerTimesWidget() {
     });
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(({ coords }) => {
-      setTimes(
-        new PrayerTimes(
-          new Coordinates(coords.latitude, coords.longitude),
-          new Date(),
-          CalculationMethod.Turkey(),
-        ),
-      );
-    });
+    const stored = readStoredCoords();
+    if (stored) {
+      setCoords(stored);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: c }) => {
+        const next = new Coordinates(c.latitude, c.longitude);
+        storeCoords(next);
+        setCoords(next);
+      },
+      undefined,
+      { enableHighAccuracy: false, maximumAge: 10 * 60 * 1000, timeout: 10_000 },
+    );
   }, []);
 
   useEffect(() => {
@@ -97,74 +141,40 @@ export default function PrayerTimesWidget() {
     nextTime !== null ? nextTime.getTime() - now.getTime() : null;
 
   return (
-    <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 md:p-6 md:h-full md:min-h-0">
+    <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 shrink-0 md:shrink-0 md:p-6 md:h-full md:min-h-0">
 
-      {/* ── MOBILE: compact full-width card ── */}
-      <div className="md:hidden flex flex-col gap-4">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+      {/* ── MOBILE: compact single strip ── */}
+      <div className="md:hidden flex items-center justify-between gap-3">
+        {/* Current prayer */}
+        <div className="flex items-center gap-3">
+          {!times && <div className="w-10 h-10 rounded-xl bg-muted animate-pulse shrink-0" />}
+          {times && currentPrayer && currentPrayer !== "none" && (() => {
+            const Icon = ICONS[currentPrayer as PrayerKey];
+            return (
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
+                <Icon className="w-5 h-5 text-primary-foreground" />
+              </div>
+            );
+          })()}
           <div>
-            <div className="flex items-center gap-1.5">
-              <h2 className="text-base font-semibold tracking-tight">{t("title")}</h2>
-              <PrayerTimesInform />
-            </div>
-            <p className="text-xs text-muted-foreground capitalize mt-0.5">{today}</p>
+            <p className="text-[11px] text-muted-foreground capitalize leading-none mb-1">{today}</p>
+            {!times && <div className="h-4 w-16 rounded bg-muted animate-pulse" />}
+            {times && currentPrayer && currentPrayer !== "none" && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-semibold leading-none">{t(currentPrayer as PrayerKey)}</span>
+                <span className="text-xs text-muted-foreground tabular-nums leading-none">{formatTime(times[currentPrayer as PrayerKey])}</span>
+                <span className="text-[9px] font-bold uppercase bg-primary/10 text-primary rounded-full px-1.5 py-0.5 leading-tight">{t("now")}</span>
+              </div>
+            )}
           </div>
-          {times && nextPrayer && nextPrayer !== "none" && msUntilNext !== null && (
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] text-muted-foreground">{t("nextPrayer")}</span>
-              <span className="text-sm font-semibold text-primary tabular-nums">
-                {formatCountdown(msUntilNext, locale)}
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-border" />
-
-        {/* Prayer grid — 2 columns */}
-        {!times && (
-          <div className="grid grid-cols-2 gap-2 animate-pulse">
-            {PRAYERS.map((key) => (
-              <div key={key} className="h-10 rounded-xl bg-muted" />
-            ))}
-          </div>
-        )}
-        {times && (
-          <div className="grid grid-cols-2 gap-2">
-            {PRAYERS.map((key) => {
-              const Icon = ICONS[key];
-              const isCurrent = currentPrayer === key;
-              const isNext = nextPrayer === key;
-              const isSunrise = key === "sunrise";
-              return (
-                <div
-                  key={key}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2.5 rounded-xl",
-                    isCurrent && "bg-primary text-primary-foreground",
-                    !isCurrent && isNext && "bg-muted",
-                    isSunrise && !isCurrent && "opacity-60",
-                  )}
-                >
-                  <Icon className={cn("w-3.5 h-3.5 shrink-0", isCurrent ? "text-primary-foreground" : "text-muted-foreground")} />
-                  <div className="flex flex-col min-w-0">
-                    <span className={cn("text-xs font-medium leading-tight", isCurrent ? "text-primary-foreground" : "text-foreground")}>
-                      {t(key)}
-                    </span>
-                    <span className={cn("text-xs tabular-nums leading-tight", isCurrent ? "text-primary-foreground" : "text-muted-foreground")}>
-                      {formatTime(times[key])}
-                    </span>
-                  </div>
-                  {isCurrent && (
-                    <span className="ml-auto text-[9px] font-bold uppercase bg-primary-foreground/20 text-primary-foreground rounded-full px-1.5 py-0.5 leading-tight shrink-0">
-                      {t("now")}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+        {/* Next prayer */}
+        {times && nextPrayer && nextPrayer !== "none" && msUntilNext !== null && (
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-[10px] text-muted-foreground leading-none mb-1">{t("nextPrayer")}</span>
+            <span className="text-sm font-bold text-primary tabular-nums leading-none">{formatCountdown(msUntilNext, locale)}</span>
+            <span className="text-[10px] text-muted-foreground mt-0.5 leading-none">{t(nextPrayer as PrayerKey)}</span>
           </div>
         )}
       </div>

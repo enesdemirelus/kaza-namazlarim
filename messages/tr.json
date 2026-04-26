@@ -1,7 +1,7 @@
 {
   "nav": {
     "home": "Ana Sayfa",
-    "graph": "Grafik",
+    "stats": "İstatistikler",
     "settings": "Ayarlar",
     "title": "Kaza Namazlarım"
   },
@@ -16,8 +16,53 @@
     "maghrib": "Akşam",
     "isha": "Yatsı"
   },
+  "actions": {
+    "title": "Namazları Yönet",
+    "subtitle": "Kaza namazı ekle veya çıkar",
+    "addOne": "Kaza Namazı Ekle",
+    "addBatch": "Toplu Ekle",
+    "removeOne": "Kaza Namazı Çıkar",
+    "removeBatch": "Toplu Çıkar"
+  },
+  "missed": {
+    "title": "Kaza Namazları",
+    "subtitle": "Kılınacak namazlar",
+    "total": "toplam kaza",
+    "all": "Tümü",
+    "monthly": "Ay",
+    "yearly": "Yıl"
+  },
   "inform": {
     "title": "Namaz Vakitleri Hesaplaması",
     "description": "Namaz vakitleri, şu anlık sadece Kuzey Amerika bölgesi hesaplamalarını kullanıyor. Farklı tür hesaplamalar yakında eklenecektir"
+  },
+  "signIn": {
+    "welcome": "Tekrar hoşgeldiniz",
+    "subtitle": "Kaza namazlarınızı takip etmek için giriş yapın"
+  },
+  "stats": {
+    "comingSoon": "İstatistikler yakında."
+  },
+  "settings": {
+    "accountTitle": "Hesap",
+    "accountSubtitle": "Profilinizi yönetin ve çıkış yapın.",
+    "manageAccount": "Hesabı Yönet",
+    "signOut": "Çıkış Yap",
+    "appearanceTitle": "Görünüm",
+    "appearanceSubtitle": "Tercih ettiğiniz renk şemasını seçin.",
+    "light": "Açık",
+    "dark": "Koyu",
+    "accentTitle": "Vurgu Rengi",
+    "accentSubtitle": "Uygulamayı favori renginizle kişiselleştirin.",
+    "green": "Yeşil",
+    "teal": "Turkuaz",
+    "cyan": "Camgöbeği",
+    "blue": "Mavi",
+    "indigo": "İndigo",
+    "violet": "Mor",
+    "purple": "Eflatun",
+    "pink": "Pembe",
+    "rose": "Gül",
+    "orange": "Turuncu"
   }
 }

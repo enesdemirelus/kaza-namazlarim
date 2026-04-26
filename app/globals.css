@@ -57,15 +57,17 @@
 
 :root {
   --shadow-card:
-    2px -2px 6px rgba(0, 0, 0, 0.02),
-    6px -6px 18px rgba(0, 0, 0, 0.03),
+    2px -2px 6px rgba(0, 0, 0, 0.02), 6px -6px 18px rgba(0, 0, 0, 0.03),
     12px -12px 40px rgba(0, 0, 0, 0.04);
   --shadow-card-hover:
-    2px -2px 8px rgba(0, 0, 0, 0.03),
-    6px -6px 20px rgba(0, 0, 0, 0.05),
+    2px -2px 8px rgba(0, 0, 0, 0.03), 6px -6px 20px rgba(0, 0, 0, 0.05),
     12px -12px 44px rgba(0, 0, 0, 0.06);
-  --bg-gradient: linear-gradient(145deg, oklch(0.97 0.008 150) 0%, oklch(0.93 0.013 145) 100%);
-  --background: oklch(0.95 0.010 148);
+  --bg-gradient: linear-gradient(
+    145deg,
+    oklch(0.97 0.008 150) 0%,
+    oklch(0.93 0.013 145) 100%
+  );
+  --background: oklch(0.95 0.01 148);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -101,15 +103,17 @@
 
 .dark {
   --shadow-card:
-    2px -2px 6px rgba(0, 0, 0, 0.10),
-    6px -6px 18px rgba(0, 0, 0, 0.14),
+    2px -2px 6px rgba(0, 0, 0, 0.1), 6px -6px 18px rgba(0, 0, 0, 0.14),
     12px -12px 40px rgba(0, 0, 0, 0.18);
   --shadow-card-hover:
-    2px -2px 8px rgba(0, 0, 0, 0.13),
-    6px -6px 20px rgba(0, 0, 0, 0.18),
+    2px -2px 8px rgba(0, 0, 0, 0.13), 6px -6px 20px rgba(0, 0, 0, 0.18),
     12px -12px 44px rgba(0, 0, 0, 0.22);
-  --bg-gradient: linear-gradient(145deg, oklch(0.13 0.03 150) 0%, oklch(0.08 0.015 150) 100%);
-  --background: oklch(0.10 0.02 150);
+  --bg-gradient: linear-gradient(
+    145deg,
+    oklch(0.13 0.03 150) 0%,
+    oklch(0.08 0.015 150) 100%
+  );
+  --background: oklch(0.1 0.02 150);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.16 0.015 150);
   --card-foreground: oklch(0.985 0 0);
@@ -141,6 +145,33 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+/* ── Accent colour overrides ────────────────────────────────────────────────
+   Each [data-color] block overrides --primary and the background gradient.
+   Green (hue 150) is the default already defined in :root / .dark.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-color="green"]  { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 150) 0%,oklch(0.93 0.013 150) 100%); --primary:oklch(0.527 0.154 150); --primary-foreground:oklch(0.982 0.018 150); --sidebar-primary:oklch(0.627 0.194 150); }
+[data-color="teal"]   { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 182) 0%,oklch(0.93 0.013 182) 100%); --primary:oklch(0.527 0.154 182); --primary-foreground:oklch(0.982 0.018 182); --sidebar-primary:oklch(0.627 0.194 182); }
+[data-color="cyan"]   { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 205) 0%,oklch(0.93 0.013 205) 100%); --primary:oklch(0.527 0.154 205); --primary-foreground:oklch(0.982 0.018 205); --sidebar-primary:oklch(0.627 0.194 205); }
+[data-color="blue"]   { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 245) 0%,oklch(0.93 0.013 245) 100%); --primary:oklch(0.527 0.154 245); --primary-foreground:oklch(0.982 0.018 245); --sidebar-primary:oklch(0.627 0.194 245); }
+[data-color="indigo"] { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 268) 0%,oklch(0.93 0.013 268) 100%); --primary:oklch(0.527 0.154 268); --primary-foreground:oklch(0.982 0.018 268); --sidebar-primary:oklch(0.627 0.194 268); }
+[data-color="violet"] { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 285) 0%,oklch(0.93 0.013 285) 100%); --primary:oklch(0.527 0.154 285); --primary-foreground:oklch(0.982 0.018 285); --sidebar-primary:oklch(0.627 0.194 285); }
+[data-color="purple"] { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 305) 0%,oklch(0.93 0.013 305) 100%); --primary:oklch(0.527 0.154 305); --primary-foreground:oklch(0.982 0.018 305); --sidebar-primary:oklch(0.627 0.194 305); }
+[data-color="pink"]   { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.008 328) 0%,oklch(0.93 0.013 328) 100%); --primary:oklch(0.527 0.154 328); --primary-foreground:oklch(0.982 0.018 328); --sidebar-primary:oklch(0.627 0.194 328); }
+[data-color="rose"]   { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.010 12)  0%,oklch(0.93 0.016 12)  100%); --primary:oklch(0.527 0.165 12);  --primary-foreground:oklch(0.982 0.018 12);  --sidebar-primary:oklch(0.627 0.200 12);  }
+[data-color="orange"] { --bg-gradient: linear-gradient(145deg,oklch(0.97 0.010 45)  0%,oklch(0.93 0.016 45)  100%); --primary:oklch(0.527 0.165 45);  --primary-foreground:oklch(0.982 0.018 45);  --sidebar-primary:oklch(0.627 0.200 45);  }
+
+.dark[data-color="green"]  { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 150) 0%,oklch(0.08 0.015 150) 100%); --primary:oklch(0.448 0.119 150); --sidebar-primary:oklch(0.723 0.219 150); }
+.dark[data-color="teal"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 182) 0%,oklch(0.08 0.015 182) 100%); --primary:oklch(0.448 0.119 182); --sidebar-primary:oklch(0.723 0.219 182); }
+.dark[data-color="cyan"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 205) 0%,oklch(0.08 0.015 205) 100%); --primary:oklch(0.448 0.119 205); --sidebar-primary:oklch(0.723 0.219 205); }
+.dark[data-color="blue"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 245) 0%,oklch(0.08 0.015 245) 100%); --primary:oklch(0.448 0.119 245); --sidebar-primary:oklch(0.723 0.219 245); }
+.dark[data-color="indigo"] { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 268) 0%,oklch(0.08 0.015 268) 100%); --primary:oklch(0.448 0.119 268); --sidebar-primary:oklch(0.723 0.219 268); }
+.dark[data-color="violet"] { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 285) 0%,oklch(0.08 0.015 285) 100%); --primary:oklch(0.448 0.119 285); --sidebar-primary:oklch(0.723 0.219 285); }
+.dark[data-color="purple"] { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 305) 0%,oklch(0.08 0.015 305) 100%); --primary:oklch(0.448 0.119 305); --sidebar-primary:oklch(0.723 0.219 305); }
+.dark[data-color="pink"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.030 328) 0%,oklch(0.08 0.015 328) 100%); --primary:oklch(0.448 0.119 328); --sidebar-primary:oklch(0.723 0.219 328); }
+.dark[data-color="rose"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.035 12)  0%,oklch(0.08 0.018 12)  100%); --primary:oklch(0.448 0.130 12);  --sidebar-primary:oklch(0.723 0.230 12);  }
+.dark[data-color="orange"] { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.035 45)  0%,oklch(0.08 0.018 45)  100%); --primary:oklch(0.448 0.130 45);  --sidebar-primary:oklch(0.723 0.230 45);  }
 
 @layer base {
   * {
