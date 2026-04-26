@@ -1,6 +1,7 @@
 import { SignIn } from "@clerk/nextjs";
 import { MoonStar } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import LocaleSwitcher from "@/app/components/LocaleSwitcher";
 
 export default async function LoginPage() {
   const t = await getTranslations("onboarding");
@@ -18,6 +19,7 @@ export default async function LoginPage() {
         forceRedirectUrl="/onboarding/check"
         signUpForceRedirectUrl="/onboarding/check"
       />
+      <LocaleSwitcher />
     </div>
   );
 }
