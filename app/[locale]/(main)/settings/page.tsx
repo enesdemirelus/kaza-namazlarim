@@ -104,7 +104,11 @@ export default function SettingsPage() {
               <UserCog className="w-4 h-4" /> {t("manageAccount")}
             </button>
             <button
-              onClick={() => signOut({ redirectUrl: "/" })}
+              onClick={() => {
+                localStorage.removeItem("knm-onboarding-done");
+                sessionStorage.removeItem("knm-settings-synced");
+                signOut({ redirectUrl: "/" });
+              }}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-muted hover:bg-destructive/10 text-muted-foreground hover:text-destructive text-xs font-medium transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" /> {t("signOut")}
