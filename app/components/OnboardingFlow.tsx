@@ -291,6 +291,7 @@ export default function OnboardingFlow() {
   const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
 
+  // Determine initial step on mount
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -313,6 +314,18 @@ export default function OnboardingFlow() {
       }
     }
   }, [isLoaded, isSignedIn, router]);
+
+  // Advance past sign-in step when Clerk auth completes in-place (hash routing)
+  useEffect(() => {
+    if (isLoaded && isSignedIn && step === 1) {
+      const done = localStorage.getItem("knm-onboarding-done");
+      if (done) {
+        router.replace("/");
+      } else {
+        setStep(2);
+      }
+    }
+  }, [isLoaded, isSignedIn, step, router]);
 
   if (step === null) return <div className="min-h-svh" />;
 
