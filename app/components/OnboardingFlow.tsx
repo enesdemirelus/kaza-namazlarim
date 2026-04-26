@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useTheme } from "next-themes";
+import { useUser } from "@clerk/nextjs";
 import { SignIn } from "@clerk/nextjs";
 import { MoonStar, Sun, Moon, Check, ArrowRight, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "@/i18n/navigation";
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const ACCENT_COLORS = [
@@ -59,7 +62,24 @@ function Dots({ step, total }: { step: number; total: number }) {
   );
 }
 
-// ── Step 1: Welcome ───────────────────────────────────────────────────────────
+// ── Step 1: Sign in ───────────────────────────────────────────────────────────
+
+function StepSignIn() {
+  const t = useTranslations("onboarding");
+  return (
+    <div className="flex flex-col items-center gap-6 flex-1 w-full px-6">
+      <div className="text-center space-y-1 w-full">
+        <h2 className="text-2xl font-bold tracking-tight">{t("almostThere")}</h2>
+        <p className="text-sm text-muted-foreground">{t("signInSubtitle")}</p>
+      </div>
+      <div className="w-full flex justify-center">
+        <SignIn routing="hash" forceRedirectUrl="/onboarding" signUpForceRedirectUrl="/onboarding" />
+      </div>
+    </div>
+  );
+}
+
+// ── Step 2: Welcome ───────────────────────────────────────────────────────────
 
 function StepWelcome({ onNext }: { onNext: () => void }) {
   const t = useTranslations("onboarding");
@@ -82,7 +102,7 @@ function StepWelcome({ onNext }: { onNext: () => void }) {
   );
 }
 
-// ── Step 2: Preferences (language, theme, colour) ─────────────────────────────
+// ── Step 3: Preferences (language, theme, colour) ─────────────────────────────
 
 function StepPreferences({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const t = useTranslations("onboarding");
@@ -102,7 +122,7 @@ function StepPreferences({ onNext, onBack }: { onNext: () => void; onBack: () =>
 
   function switchLocale(next: "tr" | "en") {
     if (next !== locale) {
-      sessionStorage.setItem("knm-onboarding-step", "2");
+      sessionStorage.setItem("knm-onboarding-step", "3");
       window.location.replace(`/${next}/onboarding`);
     }
   }
@@ -198,9 +218,9 @@ function StepPreferences({ onNext, onBack }: { onNext: () => void; onBack: () =>
   );
 }
 
-// ── Step 3: Prayer method ─────────────────────────────────────────────────────
+// ── Step 4: Prayer method ─────────────────────────────────────────────────────
 
-function StepPrayerMethod({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+function StepPrayerMethod({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
   const t = useTranslations("onboarding");
   const [selected, setSelected] = useState<MethodId>("Turkey");
 
@@ -214,7 +234,7 @@ function StepPrayerMethod({ onNext, onBack }: { onNext: () => void; onBack: () =
   function handleContinue() {
     localStorage.setItem("knm-prayer-method", selected);
     localStorage.setItem("knm-onboarding-done", "true");
-    onNext();
+    onDone();
   }
 
   return (
@@ -262,48 +282,39 @@ function StepPrayerMethod({ onNext, onBack }: { onNext: () => void; onBack: () =
   );
 }
 
-// ── Step 4: Sign in ───────────────────────────────────────────────────────────
-
-function StepSignIn({ onBack }: { onBack: () => void }) {
-  const t = useTranslations("onboarding");
-  return (
-    <div className="flex flex-col items-center gap-6 flex-1 w-full px-6">
-      <div className="text-center space-y-1 w-full">
-        <h2 className="text-2xl font-bold tracking-tight">{t("almostThere")}</h2>
-        <p className="text-sm text-muted-foreground">{t("signInSubtitle")}</p>
-      </div>
-      <div className="w-full flex justify-center">
-        <SignIn routing="hash" forceRedirectUrl="/" signUpForceRedirectUrl="/" />
-      </div>
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" /> {t("back2")}
-      </button>
-    </div>
-  );
-}
-
 // ── Main flow ─────────────────────────────────────────────────────────────────
 
 const TOTAL_STEPS = 4;
 
 export default function OnboardingFlow() {
   const [step, setStep] = useState<1 | 2 | 3 | 4 | null>(null);
+  const { isSignedIn, isLoaded } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
+    if (!isLoaded) return;
+
     const saved = sessionStorage.getItem("knm-onboarding-step");
-    const done = localStorage.getItem("knm-onboarding-done");
     if (saved) {
       sessionStorage.removeItem("knm-onboarding-step");
-      setStep(Number(saved) as 1 | 2 | 3 | 4);
-    } else {
-      setStep(done ? 4 : 1);
+      const n = Number(saved);
+      setStep((n >= 1 && n <= 4 ? n : isSignedIn ? 2 : 1) as 1 | 2 | 3 | 4);
+      return;
     }
-  }, []);
 
-  if (step === null) return null;
+    if (!isSignedIn) {
+      setStep(1);
+    } else {
+      const done = localStorage.getItem("knm-onboarding-done");
+      if (done) {
+        router.replace("/");
+      } else {
+        setStep(2);
+      }
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (step === null) return <div className="min-h-svh" />;
 
   return (
     <div className="min-h-svh flex flex-col items-center justify-center py-10">
@@ -313,10 +324,10 @@ export default function OnboardingFlow() {
           <span className="text-xs text-muted-foreground tabular-nums">{step} / {TOTAL_STEPS}</span>
         </div>
 
-        {step === 1 && <StepWelcome onNext={() => setStep(2)} />}
-        {step === 2 && <StepPreferences onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <StepPrayerMethod onNext={() => setStep(4)} onBack={() => setStep(2)} />}
-        {step === 4 && <StepSignIn onBack={() => setStep(3)} />}
+        {step === 1 && <StepSignIn />}
+        {step === 2 && <StepWelcome onNext={() => setStep(3)} />}
+        {step === 3 && <StepPreferences onNext={() => setStep(4)} onBack={() => setStep(2)} />}
+        {step === 4 && <StepPrayerMethod onDone={() => router.replace("/")} onBack={() => setStep(3)} />}
       </div>
     </div>
   );
