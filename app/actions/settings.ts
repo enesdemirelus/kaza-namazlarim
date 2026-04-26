@@ -1,7 +1,6 @@
 "use server";
 
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 
 export interface UserSettings {
@@ -50,18 +49,4 @@ export async function saveUserSettings(settings: Partial<UserSettings>): Promise
   );
 
   if (error) throw new Error(error.message);
-}
-
-export async function completeOnboarding(settings: Partial<UserSettings>): Promise<void> {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  await saveUserSettings(settings);
-
-  const client = await clerkClient();
-  await client.users.updateUser(userId, {
-    publicMetadata: { onboardingComplete: true },
-  });
-
-  redirect("/");
 }
