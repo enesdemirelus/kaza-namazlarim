@@ -1,10 +1,11 @@
 import PrayerTimesWidget from "@/app/components/PrayerTimes";
 import AddNewBox from "@/app/components/AddNewBox";
 import MissedPrayersBox from "@/app/components/MissedPrayersBox";
+import SeedButton from "@/app/components/SeedButton";
 import { getMissedPrayers } from "@/app/actions/prayers";
 
 export default async function Home() {
-  let prayers = await getMissedPrayers().catch(() => []);
+  const prayers = await getMissedPrayers().catch(() => []);
 
   return (
     <main className="flex-1 overflow-hidden flex flex-col gap-3 p-4 md:grid md:grid-cols-[1fr_1fr] md:gap-4 md:p-6">
@@ -13,6 +14,7 @@ export default async function Home() {
         <AddNewBox />
         <MissedPrayersBox prayers={prayers} />
       </div>
+      {process.env.NODE_ENV === "development" && <SeedButton />}
     </main>
   );
 }

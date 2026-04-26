@@ -165,7 +165,7 @@ export default function MissedPrayersBox({ prayers }: { prayers: MissedPrayer[] 
       {/* Controls */}
       <div className="flex items-center justify-between shrink-0">
         {/* Segmented toggle */}
-        <div className="flex gap-0.5 bg-muted rounded-xl p-0.5">
+        <div className="flex gap-0.5 bg-muted rounded-[10px] p-0.5">
           {views.map((v) => (
             <button
               key={v}
