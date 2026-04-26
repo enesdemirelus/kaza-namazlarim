@@ -3,7 +3,7 @@
     "home": "Home",
     "stats": "Stats",
     "settings": "Settings",
-    "title": "My Missed Prayers"
+    "title": "Qada Prayers"
   },
   "times": {
     "title": "Prayer Times",
@@ -18,16 +18,16 @@
   },
   "actions": {
     "title": "Manage Prayers",
-    "subtitle": "Add or remove missed prayers",
-    "addOne": "Add Missed Prayer",
+    "subtitle": "Add or remove qada prayers",
+    "addOne": "Add Qada Prayer",
     "addBatch": "Add Batch",
-    "removeOne": "Remove Missed Prayer",
+    "removeOne": "Remove Qada Prayer",
     "removeBatch": "Remove Batch"
   },
   "missed": {
-    "title": "Missed Prayers",
+    "title": "Qada Prayers",
     "subtitle": "Prayers to make up",
-    "total": "total missed",
+    "total": "total qada",
     "all": "All",
     "monthly": "Month",
     "yearly": "Year"
@@ -36,9 +36,46 @@
     "title": "Prayer Times Calculation",
     "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
   },
+  "onboarding": {
+    "appName": "Qada Prayers",
+    "tagline": "Track and make up\nyour qada prayers",
+    "getStarted": "Get Started",
+    "stepLabel": "Step {step} of {total}",
+    "makeItYours": "Make it yours",
+    "makeItYoursSubtitle": "Pick your language, theme and colour",
+    "language": "Language",
+    "turkish": "Türkçe",
+    "english": "English",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "accentColour": "Accent Colour",
+    "continue": "Continue",
+    "back": "Back",
+    "prayerMethodTitle": "Prayer Times",
+    "prayerMethodSubtitle": "Choose the calculation method for your region",
+    "almostThere": "You're all set",
+    "signInSubtitle": "Sign in or create an account to start tracking",
+    "back2": "Back",
+    "methods": {
+      "MuslimWorldLeague": "Muslim World League",
+      "Egyptian": "Egyptian Authority",
+      "Karachi": "University of Karachi",
+      "UmmAlQura": "Umm Al-Qura (Makkah)",
+      "Dubai": "Dubai",
+      "MoonsightingCommittee": "Moonsighting Committee",
+      "NorthAmerica": "North America (ISNA)",
+      "Kuwait": "Kuwait",
+      "Qatar": "Qatar",
+      "Singapore": "Singapore",
+      "Tehran": "Tehran",
+      "Turkey": "Turkey (Diyanet)",
+      "Other": "Other"
+    }
+  },
   "signIn": {
     "welcome": "Welcome back",
-    "subtitle": "Sign in to track your missed prayers"
+    "subtitle": "Sign in to track your qada prayers"
   },
   "stats": {
     "comingSoon": "Stats coming soon."
@@ -63,6 +100,10 @@
     "purple": "Purple",
     "pink": "Pink",
     "rose": "Rose",
-    "orange": "Orange"
+    "orange": "Orange",
+    "red": "Red",
+    "amber": "Amber",
+    "prayerMethodTitle": "Prayer Times Method",
+    "prayerMethodSubtitle": "Calculation method used for your prayer times"
   }
 }

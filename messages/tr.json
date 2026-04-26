@@ -36,6 +36,43 @@
     "title": "Namaz Vakitleri Hesaplaması",
     "description": "Namaz vakitleri, şu anlık sadece Kuzey Amerika bölgesi hesaplamalarını kullanıyor. Farklı tür hesaplamalar yakında eklenecektir"
   },
+  "onboarding": {
+    "appName": "Kaza Namazlarım",
+    "tagline": "Kaza namazlarınızı takip edin\nve telafi edin",
+    "getStarted": "Başlayın",
+    "stepLabel": "{step} / {total}. Adım",
+    "makeItYours": "Kişiselleştirin",
+    "makeItYoursSubtitle": "Dil, tema ve renginizi seçin",
+    "language": "Dil",
+    "turkish": "Türkçe",
+    "english": "English",
+    "theme": "Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "accentColour": "Vurgu Rengi",
+    "continue": "Devam Et",
+    "back": "Geri",
+    "prayerMethodTitle": "Namaz Vakitleri",
+    "prayerMethodSubtitle": "Bölgenize uygun hesaplama yöntemini seçin",
+    "almostThere": "Hazırsınız",
+    "signInSubtitle": "Takibe başlamak için giriş yapın veya hesap oluşturun",
+    "back2": "Geri",
+    "methods": {
+      "MuslimWorldLeague": "Müslüman Dünya Birliği",
+      "Egyptian": "Mısır Genel Araştırma Kurumu",
+      "Karachi": "Karaçi Üniversitesi",
+      "UmmAlQura": "Ümmü'l-Kura (Mekke)",
+      "Dubai": "Dubai",
+      "MoonsightingCommittee": "Ay Gözlem Komitesi",
+      "NorthAmerica": "Kuzey Amerika (ISNA)",
+      "Kuwait": "Kuveyt",
+      "Qatar": "Katar",
+      "Singapore": "Singapur",
+      "Tehran": "Tahran",
+      "Turkey": "Türkiye (Diyanet)",
+      "Other": "Diğer"
+    }
+  },
   "signIn": {
     "welcome": "Tekrar hoşgeldiniz",
     "subtitle": "Kaza namazlarınızı takip etmek için giriş yapın"
@@ -63,6 +100,10 @@
     "purple": "Eflatun",
     "pink": "Pembe",
     "rose": "Gül",
-    "orange": "Turuncu"
+    "orange": "Turuncu",
+    "red": "Kırmızı",
+    "amber": "Kehribar",
+    "prayerMethodTitle": "Namaz Vakti Yöntemi",
+    "prayerMethodSubtitle": "Namaz vakitleri için kullanılan hesaplama yöntemi"
   }
 }

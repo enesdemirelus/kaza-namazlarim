@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes } from "adhan";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Sunrise, Sun, Sunset, Moon, Clock } from "lucide-react";
-import PrayerTimesInform from "./PrayerTimesInform";
+import { Sunrise, Sun, Sunset, Moon, Clock, SlidersHorizontal } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 
 type PrayerKey = "fajr" | "sunrise" | "dhuhr" | "asr" | "maghrib" | "isha";
 
@@ -85,6 +85,7 @@ export default function PrayerTimesWidget() {
   const locale = useLocale();
   const [coords, setCoords] = useState<Coordinates | null>(null);
   const [now, setNow] = useState(new Date());
+  const [prayerMethod, setPrayerMethod] = useState("Turkey");
 
   const y = now.getFullYear();
   const mo = now.getMonth();
@@ -93,8 +94,10 @@ export default function PrayerTimesWidget() {
   const times = useMemo(() => {
     if (!coords) return null;
     const day = new Date(y, mo, d);
-    return new PrayerTimes(coords, day, CalculationMethod.Turkey());
-  }, [coords, y, mo, d]);
+    const methodFn = (CalculationMethod as Record<string, (() => unknown) | undefined>)[prayerMethod];
+    const params = typeof methodFn === "function" ? methodFn() : CalculationMethod.Turkey();
+    return new PrayerTimes(coords, day, params as ConstructorParameters<typeof PrayerTimes>[2]);
+  }, [coords, y, mo, d, prayerMethod]);
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString(locale, {
@@ -102,6 +105,11 @@ export default function PrayerTimesWidget() {
       minute: "2-digit",
       hour12: locale === "en",
     });
+
+  useEffect(() => {
+    const saved = localStorage.getItem("knm-prayer-method");
+    if (saved) setPrayerMethod(saved);
+  }, []);
 
   useEffect(() => {
     const stored = readStoredCoords();
@@ -215,7 +223,12 @@ export default function PrayerTimesWidget() {
               <h2 className="text-lg font-semibold tracking-tight">
                 {t("title")}
               </h2>
-              <PrayerTimesInform />
+              <Link
+                href="/settings"
+                className="flex items-center gap-1 text-muted-foreground/60 hover:text-primary transition-colors"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+              </Link>
             </div>
             <p className="text-sm text-muted-foreground capitalize mt-0.5">
               {today}
