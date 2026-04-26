@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Sunrise, Sun, Sunset, Moon, ChevronLeft, ChevronRight } from "lucide-react";
+import type { MissedPrayer } from "@/lib/types/database";
 
 type PrayerKey = "fajr" | "dhuhr" | "asr" | "maghrib" | "isha";
 type ViewMode = "all" | "monthly" | "yearly";
@@ -18,47 +19,48 @@ const ICONS: Record<PrayerKey, React.ElementType> = {
   isha: Moon,
 };
 
-// ── Mock data ────────────────────────────────────────────────────────────────
-type MissedData = Record<number, Record<number, Record<PrayerKey, number>>>;
-
-const MOCK: MissedData = {
-  2025: {
-    0:  { fajr: 8,  dhuhr: 4, asr: 6,  maghrib: 2, isha: 5  },
-    1:  { fajr: 6,  dhuhr: 3, asr: 4,  maghrib: 1, isha: 3  },
-    2:  { fajr: 9,  dhuhr: 5, asr: 7,  maghrib: 3, isha: 6  },
-    3:  { fajr: 7,  dhuhr: 2, asr: 5,  maghrib: 2, isha: 4  },
-    4:  { fajr: 10, dhuhr: 6, asr: 8,  maghrib: 4, isha: 7  },
-    5:  { fajr: 5,  dhuhr: 1, asr: 3,  maghrib: 1, isha: 2  },
-    6:  { fajr: 8,  dhuhr: 4, asr: 6,  maghrib: 3, isha: 5  },
-    7:  { fajr: 6,  dhuhr: 3, asr: 4,  maghrib: 2, isha: 3  },
-    8:  { fajr: 9,  dhuhr: 5, asr: 7,  maghrib: 2, isha: 6  },
-    9:  { fajr: 7,  dhuhr: 2, asr: 5,  maghrib: 1, isha: 4  },
-    10: { fajr: 10, dhuhr: 6, asr: 8,  maghrib: 4, isha: 7  },
-    11: { fajr: 5,  dhuhr: 1, asr: 3,  maghrib: 1, isha: 2  },
-  },
-  2026: {
-    0:  { fajr: 6,  dhuhr: 3, asr: 5,  maghrib: 2, isha: 4  },
-    1:  { fajr: 4,  dhuhr: 2, asr: 3,  maghrib: 1, isha: 2  },
-    2:  { fajr: 7,  dhuhr: 4, asr: 6,  maghrib: 2, isha: 5  },
-    3:  { fajr: 5,  dhuhr: 1, asr: 4,  maghrib: 1, isha: 3  },
-  },
+// DB stores "Fajr", component uses "fajr"
+const DB_TO_KEY: Record<string, PrayerKey> = {
+  Fajr: "fajr",
+  Dhuhr: "dhuhr",
+  Asr: "asr",
+  Maghrib: "maghrib",
+  Isha: "isha",
 };
 
+type MissedData = Record<number, Record<number, Record<PrayerKey, number>>>;
+
 const EMPTY: Record<PrayerKey, number> = { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 };
+
+function buildData(prayers: MissedPrayer[]): MissedData {
+  const data: MissedData = {};
+  for (const p of prayers) {
+    if (p.is_recovered) continue;
+    const key = DB_TO_KEY[p.prayer_name];
+    if (!key) continue;
+    const [yearStr, monthStr] = p.date.split("-");
+    const year = Number(yearStr);
+    const month = Number(monthStr) - 1; // JS months are 0-indexed
+    if (!data[year]) data[year] = {};
+    if (!data[year][month]) data[year][month] = { ...EMPTY };
+    data[year][month][key] += 1;
+  }
+  return data;
+}
 
 function sumPrayers(data: Record<PrayerKey, number>): number {
   return PRAYERS.reduce((s, p) => s + (data[p] ?? 0), 0);
 }
 
-function aggregateAll(): Record<PrayerKey, number> {
+function aggregateAll(data: MissedData): Record<PrayerKey, number> {
   return PRAYERS.reduce((acc, p) => {
-    acc[p] = Object.values(MOCK).flatMap(Object.values).reduce((s, m) => s + (m[p] ?? 0), 0);
+    acc[p] = Object.values(data).flatMap(Object.values).reduce((s, m) => s + (m[p] ?? 0), 0);
     return acc;
   }, {} as Record<PrayerKey, number>);
 }
 
-function aggregateYear(year: number): Record<PrayerKey, number> {
-  const months = MOCK[year] ?? {};
+function aggregateYear(data: MissedData, year: number): Record<PrayerKey, number> {
+  const months = data[year] ?? {};
   return PRAYERS.reduce((acc, p) => {
     acc[p] = Object.values(months).reduce((s, m) => s + (m[p] ?? 0), 0);
     return acc;
@@ -98,23 +100,27 @@ function PeriodNav({
 // ── Main component ───────────────────────────────────────────────────────────
 
 const now = new Date();
-const AVAILABLE_YEARS = Object.keys(MOCK).map(Number).sort();
 
-export default function MissedPrayersBox() {
+export default function MissedPrayersBox({ prayers }: { prayers: MissedPrayer[] }) {
   const t = useTranslations("times");
   const tm = useTranslations("missed");
 
+  const data = buildData(prayers);
+  const availableYears = Object.keys(data).map(Number).sort();
+  const currentYear = now.getFullYear();
+  const initialYear = availableYears.length > 0 ? Math.max(...availableYears) : currentYear;
+
   const [view, setView] = useState<ViewMode>("all");
   const [month, setMonth] = useState(now.getMonth());
-  const [monthYear, setMonthYear] = useState(now.getFullYear());
-  const [year, setYear] = useState(now.getFullYear());
+  const [monthYear, setMonthYear] = useState(currentYear);
+  const [year, setYear] = useState(initialYear);
 
   const counts =
     view === "all"
-      ? aggregateAll()
+      ? aggregateAll(data)
       : view === "yearly"
-        ? aggregateYear(year)
-        : (MOCK[monthYear]?.[month] ?? EMPTY);
+        ? aggregateYear(data, year)
+        : (data[monthYear]?.[month] ?? EMPTY);
 
   const total = sumPrayers(counts);
 
@@ -122,12 +128,13 @@ export default function MissedPrayersBox() {
     month: "short", year: "numeric",
   });
 
-  const canPrevMonth = !(monthYear === AVAILABLE_YEARS[0] && month === 0);
+  const minYear = availableYears[0] ?? currentYear;
+  const canPrevMonth = !(monthYear === minYear && month === 0);
   const canNextMonth =
-    monthYear < now.getFullYear() ||
-    (monthYear === now.getFullYear() && month < now.getMonth());
-  const canPrevYear = year > AVAILABLE_YEARS[0];
-  const canNextYear = year < now.getFullYear();
+    monthYear < currentYear ||
+    (monthYear === currentYear && month < now.getMonth());
+  const canPrevYear = year > minYear;
+  const canNextYear = year < currentYear;
 
   function prevMonth() {
     if (month === 0) { setMonth(11); setMonthYear((y) => y - 1); }
