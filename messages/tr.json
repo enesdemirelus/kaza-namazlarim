@@ -61,6 +61,25 @@
     "maghrib": "Akşam",
     "isha": "Yatsı"
   },
+  "batchRemoveModal": {
+    "title": "Toplu Kaza Sil",
+    "subtitle": "Belirli bir tarih aralığındaki kaza namazlarını sil",
+    "selectPrayers": "Namazları seç",
+    "dateRange": "Tarih aralığı",
+    "startDate": "Başlangıç tarihi",
+    "endDate": "Bitiş tarihi",
+    "warningLine": "{days} gün × {prayers} namaz türü — en fazla {count} namaz silinecek",
+    "warningNote": "Bu işlem kalıcıdır ve geri alınamaz.",
+    "submit": "Namazları Sil",
+    "submitting": "Siliniyor…",
+    "success": "Namazlar silindi",
+    "cancel": "İptal",
+    "fajr": "Sabah",
+    "dhuhr": "Öğle",
+    "asr": "İkindi",
+    "maghrib": "Akşam",
+    "isha": "Yatsı"
+  },
   "batchModal": {
     "title": "Toplu Kaza Ekle",
     "subtitle": "Belirli bir tarih aralığı için kaza namazı kaydet",
@@ -149,7 +168,72 @@
     "subtitle": "Kaza namazlarınızı takip etmek için giriş yapın"
   },
   "stats": {
-    "comingSoon": "İstatistikler yakında."
+    "comingSoon": "İstatistikler yakında.",
+    "title": "İstatistiklerin",
+    "subtitle": "Kaza yolculuğunun net bir özeti",
+    "empty": "Henüz takip edilen namaz yok",
+    "emptyHint": "İstatistikleri görmek için ana sayfadan kaza namazı ekle.",
+    "overview": {
+      "title": "Genel İlerleme",
+      "subtitle": "Ne kadar yol katettin",
+      "remaining": "kılınacak namaz",
+      "recovered": "Kılındı",
+      "total": "Toplam kayıt",
+      "daysTracked": "Takip günü",
+      "recoveredOf": "{total} kazanın {recovered} tanesi kılındı",
+      "recoveryRate": "Kılma oranı",
+      "complete": "Maşallah, tüm kazalar tamamlandı!"
+    },
+    "byPrayer": {
+      "title": "Namaz Bazında",
+      "subtitle": "Beş vakit namaz dağılımı",
+      "missed": "kaza",
+      "recovered": "kılındı",
+      "complete": "tamamlandı"
+    },
+    "insights": {
+      "title": "İçgörüler",
+      "subtitle": "Takibindeki desenler",
+      "mostMissed": "En çok kaçırılan namaz",
+      "mostMissedDay": "En çok kaçırılan gün",
+      "firstRecord": "İlk kayıt",
+      "lastRecord": "Son kayıt",
+      "daysTracked": "Takip edilen gün",
+      "uniqueDays": "Farklı tarih",
+      "avgPerWeek": "Haftalık ortalama",
+      "monthsActive": "Aktif ay sayısı",
+      "none": "—",
+      "estClearance": "Mevcut hızınla",
+      "estClearanceValue": "{count} hafta sürer",
+      "estClearanceNever": "Tahmin için biraz kazayı kıl"
+    },
+    "trend": {
+      "title": "Aylık Eğilim",
+      "subtitle": "Son 12 ay — eklenen ve kılınan",
+      "missed": "Eklenen",
+      "recovered": "Kılınan",
+      "noData": "Bu dönemde hareket yok"
+    },
+    "weekday": {
+      "title": "Haftanın Günlerine Göre",
+      "subtitle": "Hangi günlerde daha çok kaçırıyorsun",
+      "mon": "Pzt",
+      "tue": "Sal",
+      "wed": "Çar",
+      "thu": "Per",
+      "fri": "Cum",
+      "sat": "Cmt",
+      "sun": "Paz"
+    },
+    "weekdayFull": {
+      "0": "Pazartesi",
+      "1": "Salı",
+      "2": "Çarşamba",
+      "3": "Perşembe",
+      "4": "Cuma",
+      "5": "Cumartesi",
+      "6": "Pazar"
+    }
   },
   "settings": {
     "accountTitle": "Hesap",

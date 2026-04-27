@@ -61,6 +61,25 @@
     "maghrib": "Maghrib",
     "isha": "Isha"
   },
+  "batchRemoveModal": {
+    "title": "Remove Batch Prayers",
+    "subtitle": "Delete missed prayers across a date range",
+    "selectPrayers": "Select prayers",
+    "dateRange": "Date range",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "warningLine": "{days} days × {prayers} prayer types — up to {count} prayers deleted",
+    "warningNote": "This is permanent and cannot be undone.",
+    "submit": "Delete Prayers",
+    "submitting": "Deleting…",
+    "success": "Prayers deleted",
+    "cancel": "Cancel",
+    "fajr": "Fajr",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha"
+  },
   "batchModal": {
     "title": "Add Batch Prayers",
     "subtitle": "Log missed prayers across a date range",
@@ -149,7 +168,72 @@
     "subtitle": "Sign in to track your qada prayers"
   },
   "stats": {
-    "comingSoon": "Stats coming soon."
+    "comingSoon": "Stats coming soon.",
+    "title": "Your Statistics",
+    "subtitle": "A clear picture of your prayer journey",
+    "empty": "No prayers tracked yet",
+    "emptyHint": "Add some qada prayers from the home page to see your statistics here.",
+    "overview": {
+      "title": "Overall Progress",
+      "subtitle": "How far you've come",
+      "remaining": "remaining to make up",
+      "recovered": "Made up",
+      "total": "Total tracked",
+      "daysTracked": "Days tracking",
+      "recoveredOf": "{recovered} of {total} made up",
+      "recoveryRate": "Recovery rate",
+      "complete": "Mashallah, all prayers made up!"
+    },
+    "byPrayer": {
+      "title": "By Prayer",
+      "subtitle": "Breakdown across the five daily prayers",
+      "missed": "missed",
+      "recovered": "made up",
+      "complete": "complete"
+    },
+    "insights": {
+      "title": "Insights",
+      "subtitle": "Patterns in your tracking",
+      "mostMissed": "Most missed prayer",
+      "mostMissedDay": "Most missed day",
+      "firstRecord": "First record",
+      "lastRecord": "Latest record",
+      "daysTracked": "Days tracked",
+      "uniqueDays": "Unique dates",
+      "avgPerWeek": "Avg per week",
+      "monthsActive": "Active months",
+      "none": "—",
+      "estClearance": "At your current rate",
+      "estClearanceValue": "{count} weeks to clear",
+      "estClearanceNever": "Add some recoveries to estimate"
+    },
+    "trend": {
+      "title": "Monthly Trend",
+      "subtitle": "Last 12 months — added vs made up",
+      "missed": "Added",
+      "recovered": "Made up",
+      "noData": "No activity in this period"
+    },
+    "weekday": {
+      "title": "By Day of Week",
+      "subtitle": "Which weekdays you tend to miss",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "weekdayFull": {
+      "0": "Monday",
+      "1": "Tuesday",
+      "2": "Wednesday",
+      "3": "Thursday",
+      "4": "Friday",
+      "5": "Saturday",
+      "6": "Sunday"
+    }
   },
   "settings": {
     "accountTitle": "Account",

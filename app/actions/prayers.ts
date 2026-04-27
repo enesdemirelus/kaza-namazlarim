@@ -148,6 +148,32 @@ export async function addMissedPrayersBatch(
   return rows.length;
 }
 
+// Deletes all missed prayers for the given prayer types within a date range (inclusive).
+// Returns the number of rows deleted.
+export async function deleteMissedPrayersBatch(
+  prayerNames: PrayerName[],
+  startDate: string,
+  endDate: string,
+): Promise<number> {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+  if (!prayerNames.length) return 0;
+
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("missed_prayers")
+    .delete()
+    .eq("user_id", userId)
+    .in("prayer_name", prayerNames)
+    .gte("date", startDate)
+    .lte("date", endDate)
+    .select("id");
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/", "layout");
+  return data?.length ?? 0;
+}
+
 // Deletes a missed prayer record.
 export async function deleteMissedPrayer(prayerId: string): Promise<void> {
   const { userId } = await auth();

@@ -6,6 +6,7 @@ import { PlusCircle, PlusSquare, MinusCircle, MinusSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AddQadaModal from "./AddQadaModal";
 import BatchAddModal from "./BatchAddModal";
+import BatchRemoveModal from "./BatchRemoveModal";
 import RemoveQadaModal from "./RemoveQadaModal";
 
 const BUTTONS = [
@@ -20,11 +21,13 @@ export default function AddNewBox() {
   const [addOpen, setAddOpen] = useState(false);
   const [batchAddOpen, setBatchAddOpen] = useState(false);
   const [removeOpen, setRemoveOpen] = useState(false);
+  const [batchRemoveOpen, setBatchRemoveOpen] = useState(false);
 
   function handleButton(key: string) {
     if (key === "addOne") setAddOpen(true);
     if (key === "addBatch") setBatchAddOpen(true);
     if (key === "removeOne") setRemoveOpen(true);
+    if (key === "removeBatch") setBatchRemoveOpen(true);
   }
 
   return (
@@ -77,6 +80,10 @@ export default function AddNewBox() {
       <RemoveQadaModal
         open={removeOpen}
         onClose={() => setRemoveOpen(false)}
+      />
+      <BatchRemoveModal
+        open={batchRemoveOpen}
+        onClose={() => setBatchRemoveOpen(false)}
       />
     </>
   );

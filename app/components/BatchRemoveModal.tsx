@@ -7,10 +7,10 @@ import { format } from "date-fns";
 import { tr as trLocale, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { PRAYER_NAMES, type PrayerName } from "@/lib/types/database";
-import { addMissedPrayersBatch } from "@/app/actions/prayers";
+import { deleteMissedPrayersBatch } from "@/app/actions/prayers";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, AlertTriangle, CalendarIcon } from "lucide-react";
+import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, AlertTriangle, Loader2, CalendarIcon } from "lucide-react";
 
 type Status = "idle" | "submitting" | "success";
 
@@ -25,11 +25,11 @@ const PRAYER_ICONS: Record<PrayerName, React.ElementType> = {
 interface Props {
   open: boolean;
   onClose: () => void;
-  onAdded?: () => void;
+  onRemoved?: () => void;
 }
 
-export default function BatchAddModal({ open, onClose, onAdded }: Props) {
-  const t = useTranslations("batchModal");
+export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
+  const t = useTranslations("batchRemoveModal");
   const locale = useLocale();
   const dateLocale = locale === "tr" ? trLocale : enUS;
   const router = useRouter();
@@ -38,7 +38,6 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [status, setStatus] = useState<Status>("idle");
-  const [addedCount, setAddedCount] = useState(0);
 
   useEffect(() => {
     if (open) {
@@ -48,7 +47,6 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
       setStartDate(d);
       setEndDate(d);
       setStatus("idle");
-      setAddedCount(0);
     }
   }, [open]);
 
@@ -74,24 +72,22 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
     startDate && endDate
       ? Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
       : startDate ? 1 : 0;
-  const totalCount = Math.max(0, days) * selectedPrayers.size;
-  const isLargeBatch = totalCount > 100;
+  const estimatedCount = Math.max(0, days) * selectedPrayers.size;
   const canSubmit = selectedPrayers.size > 0 && days > 0 && status === "idle";
 
   async function handleSubmit() {
     if (!canSubmit || !startDate || !endDate) return;
     setStatus("submitting");
     try {
-      const count = await addMissedPrayersBatch(
+      await deleteMissedPrayersBatch(
         Array.from(selectedPrayers),
         format(startDate, "yyyy-MM-dd"),
         format(endDate, "yyyy-MM-dd"),
       );
-      setAddedCount(count);
       setStatus("success");
       router.refresh();
       setTimeout(() => {
-        onAdded?.();
+        onRemoved?.();
         onClose();
       }, 1200);
     } catch {
@@ -139,7 +135,7 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
                     className={cn(
                       "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-150",
                       isSelected
-                        ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                        ? "bg-destructive/15 border-destructive/50 text-destructive shadow-sm"
                         : "bg-muted border-transparent hover:border-border text-muted-foreground hover:text-foreground",
                     )}
                   >
@@ -215,33 +211,21 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
             </div>
           </div>
 
-          {/* Summary / warning */}
-          {totalCount > 0 && (
-            <div className={cn(
-              "rounded-2xl px-4 py-3 flex items-start gap-3",
-              isLargeBatch
-                ? "bg-amber-500/10 border border-amber-500/30"
-                : "bg-primary/8 border border-primary/20",
-            )}>
-              {isLargeBatch && (
-                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-              )}
+          {/* Warning — always shown when there's something to delete */}
+          {estimatedCount > 0 && (
+            <div className="rounded-2xl px-4 py-3 flex items-start gap-3 bg-destructive/10 border border-destructive/30">
+              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div className="flex flex-col gap-0.5">
-                <p className={cn(
-                  "text-sm font-semibold",
-                  isLargeBatch ? "text-amber-600 dark:text-amber-400" : "text-primary",
-                )}>
-                  {t("summaryLine", {
-                    count: totalCount,
+                <p className="text-sm font-semibold text-destructive">
+                  {t("warningLine", {
                     days,
                     prayers: selectedPrayers.size,
+                    count: estimatedCount,
                   })}
                 </p>
-                {isLargeBatch && (
-                  <p className="text-xs text-amber-600/80 dark:text-amber-400/80">
-                    {t("largeBatchWarning")}
-                  </p>
-                )}
+                <p className="text-xs text-destructive/70">
+                  {t("warningNote")}
+                </p>
               </div>
             </div>
           )}
@@ -264,18 +248,21 @@ export default function BatchAddModal({ open, onClose, onAdded }: Props) {
                 "flex-2 rounded-xl py-3 text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 px-4",
                 !canSubmit
                   ? "bg-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-primary text-primary-foreground hover:opacity-90 shadow-sm",
+                  : "bg-destructive text-white hover:bg-destructive/90 shadow-sm",
               )}
             >
               {status === "success" ? (
                 <>
                   <CheckCircle2 className="w-4 h-4" />
-                  {t("success", { count: addedCount })}
+                  {t("success")}
                 </>
               ) : status === "submitting" ? (
-                <span className="opacity-70">{t("submitting")}</span>
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="opacity-70">{t("submitting")}</span>
+                </>
               ) : (
-                t("submit", { count: totalCount || 0 })
+                t("submit")
               )}
             </button>
           </div>

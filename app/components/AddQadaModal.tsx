@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
+import { format } from "date-fns";
+import { tr as trLocale, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { PRAYER_NAMES, type PrayerName } from "@/lib/types/database";
 import { addMissedPrayer } from "@/app/actions/prayers";
-import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, CalendarX2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, CalendarX2, CalendarIcon } from "lucide-react";
 
 type Status = "idle" | "submitting" | "success";
 
@@ -27,25 +31,25 @@ interface Props {
 export default function AddQadaModal({ open, onClose, onAdded }: Props) {
   const t = useTranslations("addModal");
   const locale = useLocale();
+  const dateLocale = locale === "tr" ? trLocale : enUS;
   const router = useRouter();
 
   const [selected, setSelected] = useState<PrayerName | null>(null);
-  const [date, setDate] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [ignoreDate, setIgnoreDate] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
-  const todayStr = new Date().toISOString().slice(0, 10);
 
-  // Reset state every time the modal opens
   useEffect(() => {
     if (open) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
       setSelected(null);
-      setDate(todayStr);
+      setSelectedDate(d);
       setIgnoreDate(false);
       setStatus("idle");
     }
-  }, [open, todayStr]);
+  }, [open]);
 
-  // Close on Escape
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -59,7 +63,8 @@ export default function AddQadaModal({ open, onClose, onAdded }: Props) {
     if (!selected || status !== "idle") return;
     setStatus("submitting");
     try {
-      await addMissedPrayer(selected, ignoreDate ? undefined : date);
+      const dateStr = selectedDate ? format(selectedDate, "yyyy-MM-dd") : undefined;
+      await addMissedPrayer(selected, ignoreDate ? undefined : dateStr);
       setStatus("success");
       router.refresh();
       setTimeout(() => {
@@ -70,6 +75,10 @@ export default function AddQadaModal({ open, onClose, onAdded }: Props) {
       setStatus("idle");
     }
   }
+
+  const dateLabel = selectedDate
+    ? format(selectedDate, "MMM d, yyyy", { locale: dateLocale })
+    : t("selectDate");
 
   if (!open) return null;
 
@@ -132,19 +141,36 @@ export default function AddQadaModal({ open, onClose, onAdded }: Props) {
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {t("selectDate")}
             </label>
-            <input
-              type="date"
-              value={date}
-              max={todayStr}
-              disabled={ignoreDate}
-              onChange={(e) => setDate(e.target.value)}
-              className={cn(
-                "w-full rounded-xl border bg-muted px-4 py-3 text-sm font-medium tabular-nums transition-opacity",
-                "focus:outline-none focus:ring-2 focus:ring-primary/40",
-                ignoreDate && "opacity-40 cursor-not-allowed",
-                "scheme-light dark:scheme-dark",
-              )}
-            />
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  disabled={ignoreDate}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 rounded-xl border bg-muted px-4 py-3 text-sm font-medium text-left transition-colors",
+                    ignoreDate
+                      ? "opacity-40 cursor-not-allowed"
+                      : "hover:bg-muted/70",
+                  )}
+                >
+                  <CalendarIcon className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className={cn(selectedDate && !ignoreDate ? "text-foreground" : "text-muted-foreground")}>
+                    {dateLabel}
+                  </span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={(date) => date > new Date()}
+                  captionLayout="dropdown"
+                  locale={dateLocale}
+                  defaultMonth={selectedDate}
+                />
+              </PopoverContent>
+            </Popover>
 
             {/* Ignore date toggle */}
             <button
