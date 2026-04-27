@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes } from "adhan";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Sunrise, Sun, Sunset, Moon, Clock, SlidersHorizontal } from "lucide-react";
+import { Sunrise, Sun, Sunset, Moon, Clock, SlidersHorizontal, MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
 type PrayerKey = "fajr" | "sunrise" | "dhuhr" | "asr" | "maghrib" | "isha";
@@ -19,6 +19,7 @@ const PRAYERS: PrayerKey[] = [
 ];
 
 const COORDS_STORAGE_KEY = "knm-prayer-coords";
+const LOCATION_STORAGE_KEY = "knm-prayer-location";
 
 function readStoredCoords(): Coordinates | null {
   if (typeof window === "undefined") return null;
@@ -84,6 +85,9 @@ export default function PrayerTimesWidget() {
   const t = useTranslations("times");
   const locale = useLocale();
   const [coords, setCoords] = useState<Coordinates | null>(null);
+  const [locationName, setLocationName] = useState<string | null>(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem(LOCATION_STORAGE_KEY) : null
+  );
   const [now, setNow] = useState(new Date());
   const [prayerMethod, setPrayerMethod] = useState("Turkey");
 
@@ -112,9 +116,29 @@ export default function PrayerTimesWidget() {
   }, []);
 
   useEffect(() => {
+    async function resolveLocation(lat: number, lon: number) {
+      if (sessionStorage.getItem(LOCATION_STORAGE_KEY)) return;
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=10`,
+          { headers: { "Accept-Language": "en" } },
+        );
+        const json = await res.json();
+        const addr = json.address ?? {};
+        const city = addr.city ?? addr.town ?? addr.village ?? addr.county ?? "";
+        const country = (addr.country_code ?? "").toUpperCase();
+        const name = [city, country].filter(Boolean).join(", ");
+        if (name) {
+          sessionStorage.setItem(LOCATION_STORAGE_KEY, name);
+          setLocationName(name);
+        }
+      } catch { /* non-fatal */ }
+    }
+
     const stored = readStoredCoords();
     if (stored) {
       setCoords(stored);
+      resolveLocation(stored.latitude, stored.longitude);
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -122,6 +146,7 @@ export default function PrayerTimesWidget() {
         const next = new Coordinates(c.latitude, c.longitude);
         storeCoords(next);
         setCoords(next);
+        resolveLocation(c.latitude, c.longitude);
       },
       undefined,
       {
@@ -195,23 +220,31 @@ export default function PrayerTimesWidget() {
           </div>
         </div>
 
-        {/* Next prayer */}
-        {times &&
-          nextPrayer &&
-          nextPrayer !== "none" &&
-          msUntilNext !== null && (
-            <div className="flex flex-col items-end shrink-0">
-              <span className="text-[10px] text-muted-foreground leading-none mb-1">
-                {t("nextPrayer")}
-              </span>
-              <span className="text-sm font-bold text-primary tabular-nums leading-none">
-                {formatCountdown(msUntilNext, locale)}
-              </span>
-              <span className="text-[10px] text-muted-foreground mt-0.5 leading-none">
-                {t(nextPrayer as PrayerKey)}
-              </span>
+        {/* Next prayer + location */}
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          {times &&
+            nextPrayer &&
+            nextPrayer !== "none" &&
+            msUntilNext !== null && (
+              <div className="flex flex-col items-end">
+                <span className="text-[10px] text-muted-foreground leading-none mb-1">
+                  {t("nextPrayer")}
+                </span>
+                <span className="text-sm font-bold text-primary tabular-nums leading-none">
+                  {formatCountdown(msUntilNext, locale)}
+                </span>
+                <span className="text-[10px] text-muted-foreground mt-0.5 leading-none">
+                  {t(nextPrayer as PrayerKey)}
+                </span>
+              </div>
+            )}
+          {locationName && (
+            <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <MapPin className="w-2.5 h-2.5 shrink-0" />
+              <span>{locationName}</span>
             </div>
           )}
+        </div>
       </div>
 
       {/* ── DESKTOP: full vertical layout ── */}
@@ -233,6 +266,12 @@ export default function PrayerTimesWidget() {
             <p className="text-sm text-muted-foreground capitalize mt-0.5">
               {today}
             </p>
+            {locationName && (
+              <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span>{locationName}</span>
+              </div>
+            )}
           </div>
           <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
             <Clock className="w-4 h-4 text-primary" />

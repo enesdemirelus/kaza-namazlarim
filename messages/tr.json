@@ -57,7 +57,21 @@
     "prayerMethodSubtitle": "Bölgenize uygun hesaplama yöntemini seçin",
     "almostThere": "Hazırsınız",
     "signInSubtitle": "Takibe başlamak için giriş yapın veya hesap oluşturun",
+    "haveAccount": "Zaten hesabım var",
+    "features": {
+      "trackTitle": "Kaza Takibi",
+      "trackDesc": "Kaza namazlarınızı kaydedin ve sayın",
+      "timesTitle": "Namaz Vakitleri",
+      "timesDesc": "Bölgenize göre doğru vakitler",
+      "stayTitle": "Devam Edin",
+      "stayDesc": "Hiçbir kazayı atlamamak için"
+    },
     "back2": "Geri",
+    "setup": {
+      "welcome": "Hoş Geldiniz!",
+      "subtitle": "Deneyiminizi kişiselleştirelim",
+      "startTracking": "Takibe Başla"
+    },
     "methods": {
       "MuslimWorldLeague": "Müslüman Dünya Birliği",
       "Egyptian": "Mısır Genel Araştırma Kurumu",

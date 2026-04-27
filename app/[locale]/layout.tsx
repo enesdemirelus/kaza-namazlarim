@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
-import Script from "next/script";
 import "../globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { getUserSettings } from "@/app/actions/settings";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -35,10 +36,27 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = await getMessages();
 
+  // Server-side: fetch the authenticated user's accent color from DB so the
+  // initial HTML has the correct data-color attribute. No flash, no localStorage
+  // dependency, persists across devices via the database.
+  const { userId } = await auth();
+  let accentColor = "green";
+  if (userId) {
+    try {
+      const settings = await getUserSettings();
+      if (settings?.accentColor) {
+        accentColor = settings.accentColor;
+      }
+    } catch {
+      // Fall back to green on DB error
+    }
+  }
+
   return (
     <ClerkProvider>
       <html
         lang={locale}
+        data-color={accentColor}
         suppressHydrationWarning
         className={cn(
           "h-full",
@@ -50,10 +68,10 @@ export default async function RootLayout({
         )}
       >
         <head>
-          <Script
-            id="theme-init"
-            src="/theme-init.js"
-            strategy="beforeInteractive"
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){try{var t=localStorage.getItem("theme")||"light";if(t==="system"){t=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light"}document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(t)}catch(e){}})();`,
+            }}
           />
         </head>
         <body className="h-full overflow-hidden flex flex-col">

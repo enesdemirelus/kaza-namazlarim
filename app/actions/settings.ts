@@ -1,5 +1,6 @@
 "use server";
 
+import { cache } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 
@@ -8,16 +9,19 @@ export interface UserSettings {
   theme: string;
   accentColor: string;
   prayerMethod: string;
+  onboardingDone: boolean;
 }
 
-export async function getUserSettings(): Promise<UserSettings | null> {
+// Cached per request — multiple layouts can call this in the same render
+// without triggering duplicate DB queries.
+const _getUserSettings = cache(async (): Promise<UserSettings | null> => {
   const { userId } = await auth();
   if (!userId) return null;
 
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("user_settings")
-    .select("locale, theme, accent_color, prayer_method")
+    .select("locale, theme, accent_color, prayer_method, onboarding_done")
     .eq("user_id", userId)
     .single();
 
@@ -28,7 +32,12 @@ export async function getUserSettings(): Promise<UserSettings | null> {
     theme: data.theme,
     accentColor: data.accent_color,
     prayerMethod: data.prayer_method,
+    onboardingDone: data.onboarding_done ?? false,
   };
+});
+
+export async function getUserSettings(): Promise<UserSettings | null> {
+  return _getUserSettings();
 }
 
 export async function saveUserSettings(settings: Partial<UserSettings>): Promise<void> {
@@ -43,6 +52,7 @@ export async function saveUserSettings(settings: Partial<UserSettings>): Promise
       ...(settings.theme !== undefined && { theme: settings.theme }),
       ...(settings.accentColor !== undefined && { accent_color: settings.accentColor }),
       ...(settings.prayerMethod !== undefined && { prayer_method: settings.prayerMethod }),
+      ...(settings.onboardingDone !== undefined && { onboarding_done: settings.onboardingDone }),
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },

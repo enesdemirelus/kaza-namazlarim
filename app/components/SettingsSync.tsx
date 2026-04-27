@@ -11,7 +11,12 @@ export default function SettingsSync() {
   const { setTheme } = useTheme();
 
   useEffect(() => {
-    if (sessionStorage.getItem("knm-settings-synced")) return;
+    const alreadySynced = sessionStorage.getItem("knm-settings-synced");
+    const hasAccentColor = localStorage.getItem("accent-color");
+
+    // Skip only if already synced this session AND local state looks intact
+    if (alreadySynced && hasAccentColor) return;
+
     sessionStorage.setItem("knm-settings-synced", "1");
 
     async function sync() {
@@ -24,7 +29,7 @@ export default function SettingsSync() {
         localStorage.setItem("knm-prayer-method", db.prayerMethod);
         document.documentElement.setAttribute("data-color", db.accentColor);
       } else {
-        // New user after onboarding: push localStorage → DB
+        // New user: push localStorage → DB
         const theme = localStorage.getItem("theme") ?? "light";
         const accentColor = localStorage.getItem("accent-color") ?? "green";
         const prayerMethod = localStorage.getItem("knm-prayer-method") ?? "Turkey";

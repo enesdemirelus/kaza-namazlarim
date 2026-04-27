@@ -57,7 +57,21 @@
     "prayerMethodSubtitle": "Choose the calculation method for your region",
     "almostThere": "You're all set",
     "signInSubtitle": "Sign in or create an account to start tracking",
+    "haveAccount": "I already have an account",
+    "features": {
+      "trackTitle": "Track Qada",
+      "trackDesc": "Log and count your missed prayers",
+      "timesTitle": "Prayer Times",
+      "timesDesc": "Accurate times for your region",
+      "stayTitle": "Stay on Track",
+      "stayDesc": "Never miss making them up"
+    },
     "back2": "Back",
+    "setup": {
+      "welcome": "Welcome!",
+      "subtitle": "Let's personalize your experience",
+      "startTracking": "Start Tracking"
+    },
     "methods": {
       "MuslimWorldLeague": "Muslim World League",
       "Egyptian": "Egyptian Authority",
