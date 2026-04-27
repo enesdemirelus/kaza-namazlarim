@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ClerkProvider } from "@clerk/nextjs";
+import { enUS, trTR } from "@clerk/localizations";
 import { auth } from "@clerk/nextjs/server";
 import { getUserSettings } from "@/app/actions/settings";
 
@@ -36,6 +37,8 @@ export default async function RootLayout({
   const { locale } = await params;
   const messages = await getMessages();
 
+  const localization = locale === "tr" ? trTR : enUS;
+
   // Server-side: fetch the authenticated user's accent color from DB so the
   // initial HTML has the correct data-color attribute. No flash, no localStorage
   // dependency, persists across devices via the database.
@@ -53,7 +56,7 @@ export default async function RootLayout({
   }
 
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={localization}>
       <html
         lang={locale}
         data-color={accentColor}

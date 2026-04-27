@@ -1,7 +1,6 @@
 import PrayerTimesWidget from "@/app/components/PrayerTimes";
 import AddNewBox from "@/app/components/AddNewBox";
 import MissedPrayersBox from "@/app/components/MissedPrayersBox";
-import SeedButton from "@/app/components/SeedButton";
 import { getMissedPrayers } from "@/app/actions/prayers";
 
 export default async function Home() {
@@ -14,7 +13,6 @@ export default async function Home() {
         <MissedPrayersBox prayers={prayers} />
         <AddNewBox />
       </div>
-      {process.env.NODE_ENV === "development" && <SeedButton />}
     </main>
   );
 }

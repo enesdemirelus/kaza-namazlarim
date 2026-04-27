@@ -10,6 +10,7 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@clerk/localizations": "^4.5.5",
     "@clerk/nextjs": "^7.2.7",
     "@supabase/supabase-js": "^2.104.0",
     "adhan": "^4.4.3",
