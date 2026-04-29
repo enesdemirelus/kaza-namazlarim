@@ -7,12 +7,13 @@ import { format } from "date-fns";
 import { tr as trLocale, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { PRAYER_NAMES, type PrayerName } from "@/lib/types/database";
-import { deleteMissedPrayersBatch } from "@/app/actions/prayers";
+import { deleteMissedPrayersBatch, deleteMissedPrayersByCount } from "@/app/actions/prayers";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, AlertTriangle, Loader2, CalendarIcon } from "lucide-react";
 
 type Status = "idle" | "submitting" | "success";
+type Mode = "range" | "count";
 
 const PRAYER_ICONS: Record<PrayerName, React.ElementType> = {
   Fajr: Sunrise,
@@ -34,18 +35,22 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
   const dateLocale = locale === "tr" ? trLocale : enUS;
   const router = useRouter();
 
+  const [mode, setMode] = useState<Mode>("range");
   const [selectedPrayers, setSelectedPrayers] = useState<Set<PrayerName>>(new Set());
   const [startDate, setStartDate] = useState<Date | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
+  const [countInput, setCountInput] = useState<string>("1");
   const [status, setStatus] = useState<Status>("idle");
 
   useEffect(() => {
     if (open) {
       const d = new Date();
       d.setHours(0, 0, 0, 0);
+      setMode("range");
       setSelectedPrayers(new Set());
       setStartDate(d);
       setEndDate(d);
+      setCountInput("1");
       setStatus("idle");
     }
   }, [open]);
@@ -72,18 +77,36 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
     startDate && endDate
       ? Math.floor((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
       : startDate ? 1 : 0;
-  const estimatedCount = Math.max(0, days) * selectedPrayers.size;
-  const canSubmit = selectedPrayers.size > 0 && days > 0 && status === "idle";
+  const parsedCount = Math.max(0, Math.floor(Number(countInput) || 0));
+  const estimatedCount =
+    mode === "range"
+      ? Math.max(0, days) * selectedPrayers.size
+      : parsedCount * selectedPrayers.size;
+  const canSubmit =
+    selectedPrayers.size > 0 &&
+    status === "idle" &&
+    (mode === "range" ? days > 0 : parsedCount > 0);
 
   async function handleSubmit() {
-    if (!canSubmit || !startDate || !endDate) return;
+    if (!canSubmit) return;
     setStatus("submitting");
     try {
-      await deleteMissedPrayersBatch(
-        Array.from(selectedPrayers),
-        format(startDate, "yyyy-MM-dd"),
-        format(endDate, "yyyy-MM-dd"),
-      );
+      if (mode === "range") {
+        if (!startDate || !endDate) {
+          setStatus("idle");
+          return;
+        }
+        await deleteMissedPrayersBatch(
+          Array.from(selectedPrayers),
+          format(startDate, "yyyy-MM-dd"),
+          format(endDate, "yyyy-MM-dd"),
+        );
+      } else {
+        await deleteMissedPrayersByCount(
+          Array.from(selectedPrayers),
+          parsedCount,
+        );
+      }
       setStatus("success");
       router.refresh();
       setTimeout(() => {
@@ -149,7 +172,44 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
             </div>
           </div>
 
+          {/* Mode toggle */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {t("mode")}
+            </label>
+            <div className="grid grid-cols-2 gap-1 p-1 rounded-2xl bg-muted">
+              <button
+                type="button"
+                onClick={() => setMode("range")}
+                className={cn(
+                  "py-2 rounded-xl text-xs font-semibold transition-all duration-150",
+                  mode === "range"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t("modeRange")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("count")}
+                className={cn(
+                  "py-2 rounded-xl text-xs font-semibold transition-all duration-150",
+                  mode === "count"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {t("modeCount")}
+              </button>
+            </div>
+            <p className="text-[11px] text-muted-foreground px-0.5">
+              {mode === "range" ? t("modeRangeHint") : t("modeCountHint")}
+            </p>
+          </div>
+
           {/* Date range pickers */}
+          {mode === "range" && (
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {t("dateRange")}
@@ -210,6 +270,29 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
               </div>
             </div>
           </div>
+          )}
+
+          {/* Count input */}
+          {mode === "count" && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t("count")}
+              </label>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                step={1}
+                value={countInput}
+                onChange={(e) => setCountInput(e.target.value.replace(/[^0-9]/g, ""))}
+                placeholder="0"
+                className="w-full rounded-xl border bg-muted px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted/70 focus:bg-background focus:outline-none focus:ring-2 focus:ring-destructive/40 transition-colors"
+              />
+              <p className="text-[11px] text-muted-foreground px-0.5">
+                {t("countHint")}
+              </p>
+            </div>
+          )}
 
           {/* Warning — always shown when there's something to delete */}
           {estimatedCount > 0 && (
@@ -217,11 +300,17 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-semibold text-destructive">
-                  {t("warningLine", {
-                    days,
-                    prayers: selectedPrayers.size,
-                    count: estimatedCount,
-                  })}
+                  {mode === "range"
+                    ? t("warningLine", {
+                        days,
+                        prayers: selectedPrayers.size,
+                        count: estimatedCount,
+                      })
+                    : t("warningLineCount", {
+                        n: parsedCount,
+                        prayers: selectedPrayers.size,
+                        count: estimatedCount,
+                      })}
                 </p>
                 <p className="text-xs text-destructive/70">
                   {t("warningNote")}

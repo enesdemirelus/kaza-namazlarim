@@ -114,12 +114,12 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
   return (
     <Dialog open={open}>
       <DialogContent
-        className="max-h-[90svh] overflow-y-auto"
+        className="overflow-hidden"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl font-bold tracking-tight">
+          <DialogTitle className="text-xl font-bold tracking-tight">
             {t("setup.welcome")}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
@@ -127,9 +127,9 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-5 mt-2">
+        <div className="flex flex-col gap-3 mt-1">
           {/* Theme */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("theme")}
             </p>
@@ -142,7 +142,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
                   key={value}
                   onClick={() => handleTheme(value)}
                   className={cn(
-                    "flex items-center justify-center gap-2 py-3 rounded-2xl border text-sm font-semibold transition-all",
+                    "flex items-center justify-center gap-2 py-2.5 rounded-2xl border text-sm font-semibold transition-all",
                     theme === value
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card text-muted-foreground hover:bg-muted",
@@ -155,7 +155,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
           </div>
 
           {/* Accent colour */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("accentColour")}
             </p>
@@ -168,7 +168,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
                 >
                   <span
                     className={cn(
-                      "w-10 h-10 rounded-2xl flex items-center justify-center transition-all",
+                      "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
                       accent === id
                         ? "ring-2 ring-offset-2 ring-foreground/30 scale-110"
                         : "hover:scale-105",
@@ -185,26 +185,23 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
           </div>
 
           {/* Prayer method */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t("prayerMethodTitle")}
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {CALCULATION_METHODS.map((id) => (
                 <button
                   key={id}
                   onClick={() => setMethod(id)}
                   className={cn(
-                    "relative flex flex-col items-start px-3 py-3 rounded-2xl border text-xs font-medium text-left transition-all",
+                    "relative h-12 flex items-center justify-center px-2.5 rounded-xl border text-center transition-all",
                     method === id
                       ? "border-primary bg-primary/10 text-primary"
                       : "border-border bg-card text-foreground hover:bg-muted",
                   )}
                 >
-                  <span className="leading-snug pr-4">{t(`methods.${id}`)}</span>
-                  {method === id && (
-                    <Check className="absolute top-2 right-2 w-3.5 h-3.5 shrink-0" />
-                  )}
+                  <span className="text-xs font-bold leading-snug line-clamp-2 w-full text-center px-1">{t(`methods.${id}`)}</span>
                 </button>
               ))}
             </div>
@@ -215,7 +212,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="mt-2 w-full flex items-center justify-center py-3.5 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-60"
+          className="mt-2 w-full flex items-center justify-center py-3 rounded-2xl bg-primary text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity disabled:opacity-60"
         >
           {t("setup.startTracking")}
         </button>

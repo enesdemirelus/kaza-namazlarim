@@ -9,31 +9,40 @@ import { cn } from "@/lib/utils";
 import { saveUserSettings } from "@/app/actions/settings";
 
 const CALCULATION_METHODS = [
-  "Turkey", "NorthAmerica", "MuslimWorldLeague", "Egyptian",
-  "Karachi", "UmmAlQura", "Dubai", "Kuwait", "Qatar",
-  "Singapore", "Tehran", "MoonsightingCommittee",
+  "Turkey",
+  "NorthAmerica",
+  "MuslimWorldLeague",
+  "Egyptian",
+  "Karachi",
+  "UmmAlQura",
+  "Dubai",
+  "Kuwait",
+  "Qatar",
+  "Singapore",
+  "Tehran",
+  "MoonsightingCommittee",
 ] as const;
 
 type MethodId = (typeof CALCULATION_METHODS)[number];
 
 const THEME_VALUES = [
-  { value: "light", Icon: Sun  },
-  { value: "dark",  Icon: Moon },
+  { value: "light", Icon: Sun },
+  { value: "dark", Icon: Moon },
 ] as const;
 
 const ACCENT_COLORS = [
-  { id: "green",  hue: 150 },
-  { id: "teal",   hue: 182 },
-  { id: "cyan",   hue: 205 },
-  { id: "blue",   hue: 245 },
+  { id: "green", hue: 150 },
+  { id: "teal", hue: 182 },
+  { id: "cyan", hue: 205 },
+  { id: "blue", hue: 245 },
   { id: "indigo", hue: 268 },
   { id: "violet", hue: 285 },
   { id: "purple", hue: 305 },
-  { id: "pink",   hue: 328 },
-  { id: "rose",   hue: 12  },
-  { id: "orange", hue: 45  },
-  { id: "red",    hue: 5   },
-  { id: "amber",  hue: 55  },
+  { id: "pink", hue: 328 },
+  { id: "rose", hue: 12 },
+  { id: "orange", hue: 45 },
+  { id: "red", hue: 5 },
+  { id: "amber", hue: 55 },
 ] as const;
 
 type AccentId = (typeof ACCENT_COLORS)[number]["id"];
@@ -54,8 +63,12 @@ export default function SettingsPage() {
 
   useEffect(() => {
     setMounted(true);
-    setAccentState((localStorage.getItem("accent-color") ?? "green") as AccentId);
-    setPrayerMethodState((localStorage.getItem("knm-prayer-method") ?? "Turkey") as MethodId);
+    setAccentState(
+      (localStorage.getItem("accent-color") ?? "green") as AccentId,
+    );
+    setPrayerMethodState(
+      (localStorage.getItem("knm-prayer-method") ?? "Turkey") as MethodId,
+    );
   }, []);
 
   function setAccent(id: AccentId) {
@@ -74,23 +87,32 @@ export default function SettingsPage() {
   return (
     <main className="flex-1 overflow-y-auto p-4 md:p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pb-4">
-
         {/* Account */}
         <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-5 space-y-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">{t("accountTitle")}</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("accountSubtitle")}</p>
+            <h2 className="text-sm font-semibold tracking-tight">
+              {t("accountTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("accountSubtitle")}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             {user?.imageUrl ? (
-              <img src={user.imageUrl} alt={user.fullName ?? ""} className="w-10 h-10 rounded-2xl object-cover shrink-0" />
+              <img
+                src={user.imageUrl}
+                alt={user.fullName ?? ""}
+                className="w-10 h-10 rounded-2xl object-cover shrink-0"
+              />
             ) : (
               <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 text-primary font-semibold text-sm">
                 {user?.firstName?.[0] ?? "?"}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-medium leading-tight truncate">{user?.fullName ?? "—"}</p>
+              <p className="text-sm font-medium leading-tight truncate">
+                {user?.fullName ?? "—"}
+              </p>
               <p className="text-xs text-muted-foreground leading-tight truncate mt-0.5">
                 {user?.primaryEmailAddress?.emailAddress ?? ""}
               </p>
@@ -106,7 +128,10 @@ export default function SettingsPage() {
             <button
               onClick={() => {
                 localStorage.removeItem("accent-color");
+                localStorage.removeItem("theme");
+                localStorage.removeItem("knm-prayer-method");
                 document.documentElement.setAttribute("data-color", "green");
+                setTheme("light");
                 sessionStorage.removeItem("knm-settings-synced");
                 signOut({ redirectUrl: "/onboarding" });
               }}
@@ -120,8 +145,12 @@ export default function SettingsPage() {
         {/* Appearance */}
         <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-5 space-y-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">{t("appearanceTitle")}</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("appearanceSubtitle")}</p>
+            <h2 className="text-sm font-semibold tracking-tight">
+              {t("appearanceTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("appearanceSubtitle")}
+            </p>
           </div>
           <div className="flex gap-2">
             {THEME_VALUES.map(({ value, Icon }) => (
@@ -145,10 +174,14 @@ export default function SettingsPage() {
         {/* Accent colour — flex-col so swatch grid can flex-1 to match prayer card height */}
         <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-5 flex flex-col gap-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">{t("accentTitle")}</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("accentSubtitle")}</p>
+            <h2 className="text-sm font-semibold tracking-tight">
+              {t("accentTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("accentSubtitle")}
+            </p>
           </div>
-          <div className="flex-1 grid grid-cols-4 gap-x-2 gap-y-0 content-between">
+          <div className="flex-1 grid grid-cols-4 gap-x-2 gap-y-2 md:gap-y-0 md:content-between">
             {ACCENT_COLORS.map(({ id, hue }) => {
               const isActive = accent === id;
               return (
@@ -160,13 +193,25 @@ export default function SettingsPage() {
                   <span
                     className={cn(
                       "w-10 h-10 rounded-2xl flex items-center justify-center transition-all ring-offset-background",
-                      isActive ? "ring-2 ring-offset-2 ring-foreground/30 scale-110" : "group-hover:scale-105",
+                      isActive
+                        ? "ring-2 ring-offset-2 ring-foreground/30 scale-110"
+                        : "group-hover:scale-105",
                     )}
                     style={{ backgroundColor: swatchColor(hue) }}
                   >
-                    {isActive && <Check className="w-4 h-4 text-white drop-shadow" strokeWidth={2.5} />}
+                    {isActive && (
+                      <Check
+                        className="w-4 h-4 text-white drop-shadow"
+                        strokeWidth={2.5}
+                      />
+                    )}
                   </span>
-                  <span className={cn("text-[10px] font-medium leading-none", isActive ? "text-foreground" : "text-muted-foreground")}>
+                  <span
+                    className={cn(
+                      "hidden md:block text-[10px] font-medium leading-none",
+                      isActive ? "text-foreground" : "text-muted-foreground",
+                    )}
+                  >
                     {t(id)}
                   </span>
                 </button>
@@ -178,8 +223,12 @@ export default function SettingsPage() {
         {/* Prayer times method */}
         <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-5 space-y-4">
           <div>
-            <h2 className="text-sm font-semibold tracking-tight">{t("prayerMethodTitle")}</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">{t("prayerMethodSubtitle")}</p>
+            <h2 className="text-sm font-semibold tracking-tight">
+              {t("prayerMethodTitle")}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {t("prayerMethodSubtitle")}
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {CALCULATION_METHODS.map((id) => (
@@ -193,13 +242,19 @@ export default function SettingsPage() {
                     : "border-border bg-muted/40 text-muted-foreground hover:bg-muted",
                 )}
               >
-                <span className="leading-snug flex-1">{tm(`methods.${id}`)}</span>
-                {prayerMethod === id && <Check className="w-3.5 h-3.5 shrink-0 ml-1" strokeWidth={2.5} />}
+                <span className="leading-snug flex-1">
+                  {tm(`methods.${id}`)}
+                </span>
+                {prayerMethod === id && (
+                  <Check
+                    className="w-3.5 h-3.5 shrink-0 ml-1"
+                    strokeWidth={2.5}
+                  />
+                )}
               </button>
             ))}
           </div>
         </div>
-
       </div>
     </main>
   );

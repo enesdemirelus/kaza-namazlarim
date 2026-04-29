@@ -148,6 +148,82 @@ export async function addMissedPrayersBatch(
   return rows.length;
 }
 
+// Inserts `count` missed prayers per selected prayer type, all dated today.
+// Returns the total number of rows inserted.
+export async function addMissedPrayersByCount(
+  prayerNames: PrayerName[],
+  count: number,
+): Promise<number> {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+  if (!prayerNames.length || count <= 0) return 0;
+
+  await upsertUser();
+
+  const today = new Date().toISOString().slice(0, 10);
+  const rows: { user_id: string; prayer_name: PrayerName; date: string }[] = [];
+  for (const prayerName of prayerNames) {
+    for (let i = 0; i < count; i++) {
+      rows.push({ user_id: userId, prayer_name: prayerName, date: today });
+    }
+  }
+
+  const supabase = getSupabase();
+  const CHUNK = 500;
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const { error } = await supabase
+      .from("missed_prayers")
+      .insert(rows.slice(i, i + CHUNK));
+    if (error) throw new Error(error.message);
+  }
+
+  revalidatePath("/", "layout");
+  return rows.length;
+}
+
+// Deletes the `count` most recently created non-recovered missed prayers for
+// each selected prayer type. Returns the total number of rows deleted.
+export async function deleteMissedPrayersByCount(
+  prayerNames: PrayerName[],
+  count: number,
+): Promise<number> {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+  if (!prayerNames.length || count <= 0) return 0;
+
+  const supabase = getSupabase();
+  const idsToDelete: string[] = [];
+
+  for (const prayerName of prayerNames) {
+    const { data, error } = await supabase
+      .from("missed_prayers")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("prayer_name", prayerName)
+      .eq("is_recovered", false)
+      .order("created_at", { ascending: false })
+      .limit(count);
+    if (error) throw new Error(error.message);
+    for (const row of data ?? []) idsToDelete.push(row.id as string);
+  }
+
+  if (!idsToDelete.length) {
+    revalidatePath("/", "layout");
+    return 0;
+  }
+
+  const { data: deleted, error: delError } = await supabase
+    .from("missed_prayers")
+    .delete()
+    .eq("user_id", userId)
+    .in("id", idsToDelete)
+    .select("id");
+
+  if (delError) throw new Error(delError.message);
+  revalidatePath("/", "layout");
+  return deleted?.length ?? 0;
+}
+
 // Deletes all missed prayers for the given prayer types within a date range (inclusive).
 // Returns the number of rows deleted.
 export async function deleteMissedPrayersBatch(
