@@ -127,58 +127,6 @@
     "title": "Prayer Times Calculation",
     "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
   },
-  "onboarding": {
-    "appName": "Qada Prayers",
-    "tagline": "Track and make up\nyour qada prayers",
-    "getStarted": "Get Started",
-    "stepLabel": "Step {step} of {total}",
-    "makeItYours": "Make it yours",
-    "makeItYoursSubtitle": "Pick your language, theme and colour",
-    "language": "Language",
-    "turkish": "Türkçe",
-    "english": "English",
-    "theme": "Theme",
-    "light": "Light",
-    "dark": "Dark",
-    "accentColour": "Accent Colour",
-    "continue": "Continue",
-    "finish": "Finish",
-    "back": "Back",
-    "prayerMethodTitle": "Prayer Times",
-    "prayerMethodSubtitle": "Choose the calculation method for your region",
-    "almostThere": "You're all set",
-    "signInSubtitle": "Sign in or create an account to start tracking",
-    "haveAccount": "I already have an account",
-    "features": {
-      "trackTitle": "Track Qada",
-      "trackDesc": "Log and count your missed prayers",
-      "timesTitle": "Prayer Times",
-      "timesDesc": "Accurate times for your region",
-      "stayTitle": "Stay on Track",
-      "stayDesc": "Never miss making them up"
-    },
-    "back2": "Back",
-    "setup": {
-      "welcome": "Welcome!",
-      "subtitle": "Let's personalize your experience",
-      "startTracking": "Start Tracking"
-    },
-    "methods": {
-      "MuslimWorldLeague": "Muslim World League",
-      "Egyptian": "Egyptian Authority",
-      "Karachi": "University of Karachi",
-      "UmmAlQura": "Umm Al-Qura (Makkah)",
-      "Dubai": "Dubai",
-      "MoonsightingCommittee": "Moonsighting Committee",
-      "NorthAmerica": "North America (ISNA)",
-      "Kuwait": "Kuwait",
-      "Qatar": "Qatar",
-      "Singapore": "Singapore",
-      "Tehran": "Tehran",
-      "Turkey": "Turkey (Diyanet)",
-      "Other": "Other"
-    }
-  },
   "signIn": {
     "welcome": "Welcome back",
     "subtitle": "Sign in to track your qada prayers"
@@ -275,6 +223,21 @@
     "red": "Red",
     "amber": "Amber",
     "prayerMethodTitle": "Prayer Times Method",
-    "prayerMethodSubtitle": "Calculation method used for your prayer times"
+    "prayerMethodSubtitle": "Calculation method used for your prayer times",
+    "methods": {
+      "MuslimWorldLeague": "Muslim World League",
+      "Egyptian": "Egyptian Authority",
+      "Karachi": "University of Karachi",
+      "UmmAlQura": "Umm Al-Qura (Makkah)",
+      "Dubai": "Dubai",
+      "MoonsightingCommittee": "Moonsighting Committee",
+      "NorthAmerica": "North America (ISNA)",
+      "Kuwait": "Kuwait",
+      "Qatar": "Qatar",
+      "Singapore": "Singapore",
+      "Tehran": "Tehran",
+      "Turkey": "Turkey (Diyanet)",
+      "Other": "Other"
+    }
   }
 }

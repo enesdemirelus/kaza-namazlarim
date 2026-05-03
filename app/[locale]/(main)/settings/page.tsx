@@ -53,7 +53,6 @@ function swatchColor(hue: number) {
 
 export default function SettingsPage() {
   const t = useTranslations("settings");
-  const tm = useTranslations("onboarding");
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [accent, setAccentState] = useState<AccentId>("green");
@@ -133,7 +132,7 @@ export default function SettingsPage() {
                 document.documentElement.setAttribute("data-color", "green");
                 setTheme("light");
                 sessionStorage.removeItem("knm-settings-synced");
-                signOut({ redirectUrl: "/onboarding" });
+                signOut({ redirectUrl: "/sign-in" });
               }}
               className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl bg-muted hover:bg-destructive/10 text-muted-foreground hover:text-destructive text-xs font-medium transition-colors cursor-pointer"
             >
@@ -243,7 +242,7 @@ export default function SettingsPage() {
                 )}
               >
                 <span className="leading-snug flex-1">
-                  {tm(`methods.${id}`)}
+                  {t(`methods.${id}`)}
                 </span>
                 {prayerMethod === id && (
                   <Check
