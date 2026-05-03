@@ -260,7 +260,7 @@ export default function PrayerTimesWidget() {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
-                          <span className={cn("text-sm font-bold leading-none truncate", isSunrise && "text-muted-foreground")}>
+                          <span className={cn("text-sm font-bold leading-tight truncate", isSunrise && "text-muted-foreground")}>
                             {t(currentPrayer as PrayerKey)}
                           </span>
                           {!isSunrise && (
@@ -291,13 +291,13 @@ export default function PrayerTimesWidget() {
               </div>
             ) : nextPrayer && nextPrayer !== "none" && msUntilNext !== null ? (
               <div className="flex flex-col items-end shrink-0">
-                <span className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground leading-none mb-1">
+                <span className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground leading-tight mb-1">
                   {t("nextPrayer")}
                 </span>
-                <span className="text-sm font-bold text-primary tabular-nums leading-none mb-0.5">
+                <span className="text-sm font-bold text-primary tabular-nums leading-tight mb-0.5">
                   {formatCountdown(msUntilNext, locale)}
                 </span>
-                <span className="text-xs text-muted-foreground leading-none">
+                <span className="text-xs text-muted-foreground leading-tight">
                   {t(nextPrayer as PrayerKey)}
                 </span>
               </div>
