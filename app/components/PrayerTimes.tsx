@@ -167,6 +167,14 @@ export default function PrayerTimesWidget() {
     return new PrayerTimes(coords, day, params as ConstructorParameters<typeof PrayerTimes>[2]);
   }, [coords, y, mo, d, prayerMethod]);
 
+  const tomorrowFajr = useMemo(() => {
+    if (!coords) return null;
+    const tomorrow = new Date(y, mo, d + 1);
+    const methodFn = (CalculationMethod as Record<string, (() => unknown) | undefined>)[prayerMethod];
+    const params = typeof methodFn === "function" ? methodFn() : CalculationMethod.Turkey();
+    return new PrayerTimes(coords, tomorrow, params as ConstructorParameters<typeof PrayerTimes>[2]).fajr;
+  }, [coords, y, mo, d, prayerMethod]);
+
   const formatTime = (date: Date) =>
     date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: locale === "en" });
 
@@ -221,9 +229,11 @@ export default function PrayerTimesWidget() {
   const today = now.toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" });
 
   const currentPrayer = times?.currentPrayer(now) ?? null;
-  const nextPrayer = times?.nextPrayer(now) ?? null;
-  const nextTime = nextPrayer && nextPrayer !== "none" ? (times?.timeForPrayer(nextPrayer) ?? null) : null;
-  const msUntilNext = nextTime !== null ? nextTime.getTime() - now.getTime() : null;
+  const rawNextPrayer = times?.nextPrayer(now) ?? null;
+  const isAfterIsha = rawNextPrayer === "none";
+  const nextPrayer = isAfterIsha ? "fajr" : rawNextPrayer;
+  const nextTime = isAfterIsha ? tomorrowFajr : (nextPrayer ? (times?.timeForPrayer(nextPrayer) ?? null) : null);
+  const msUntilNext = nextTime !== null ? nextTime!.getTime() - now.getTime() : null;
 
   return (
     <>
