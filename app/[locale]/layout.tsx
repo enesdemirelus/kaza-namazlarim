@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Outfit } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kaza Namazlarım",
   description: "Track your missed prayers",
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({
@@ -62,7 +66,7 @@ export default async function RootLayout({
         data-color={accentColor}
         suppressHydrationWarning
         className={cn(
-          "h-full",
+          "min-h-dvh",
           "antialiased",
           geistSans.variable,
           geistMono.variable,
@@ -77,7 +81,7 @@ export default async function RootLayout({
             }}
           />
         </head>
-        <body className="h-full overflow-hidden flex flex-col">
+        <body className="min-h-dvh flex flex-col">
           <NextIntlClientProvider messages={messages}>
             <ThemeProvider
               attribute="class"

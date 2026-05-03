@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { UserButton } from "@clerk/nextjs";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { Settings } from "lucide-react";
+import { Link as NavLink } from "@/i18n/navigation";
 
 // ---------------------------------------------------------------------------
 // DROPDOWN EXAMPLE — copy this block to add a dropdown nav item.
@@ -100,13 +102,23 @@ export default function NavBar() {
         {/* Right side */}
         <div className="flex items-center gap-2">
           <LocaleSwitcher />
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "w-8 h-8",
-              },
-            }}
-          />
+          {/* Settings icon — mobile only */}
+          <NavLink
+            href="/settings"
+            className="md:hidden p-1.5 rounded-lg text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Settings className="w-5 h-5" />
+          </NavLink>
+          {/* User avatar — desktop only */}
+          <div className="hidden md:block">
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "w-8 h-8",
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
     </header>

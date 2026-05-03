@@ -1,6 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
 import NavBar from "@/app/components/NavBar";
-import BottomNav from "@/app/components/BottomNav";
 import { upsertUser } from "@/app/actions/prayers";
 import SettingsSync from "@/app/components/SettingsSync";
 import SetupModal from "@/app/components/SetupModal";
@@ -20,12 +19,11 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <div className="h-full flex flex-col pb-20 md:pb-0 overflow-hidden">
+    <div className="flex-1 flex flex-col">
       <SettingsSync />
       <SetupModal defaultOpen={!onboardingDone} />
       <NavBar />
       {children}
-      <BottomNav />
     </div>
   );
 }
