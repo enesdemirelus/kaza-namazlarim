@@ -299,7 +299,7 @@ export default function PrayerTimesWidget() {
                 <div className="h-5 w-16 rounded bg-muted animate-pulse" />
                 <div className="h-2.5 w-8 rounded bg-muted animate-pulse" />
               </div>
-            ) : nextPrayer && nextPrayer !== "none" && msUntilNext !== null ? (
+            ) : nextPrayer && msUntilNext !== null ? (
               <div className="flex flex-col items-end shrink-0">
                 <span className="text-[9px] font-medium uppercase tracking-wide text-muted-foreground leading-tight mb-1">
                   {t("nextPrayer")}
@@ -356,7 +356,7 @@ export default function PrayerTimesWidget() {
           </div>
 
           {/* Next prayer countdown */}
-          {times && nextPrayer && nextPrayer !== "none" && msUntilNext !== null && (
+          {times && nextPrayer && msUntilNext !== null && (
             <div className="flex items-center justify-between rounded-2xl bg-primary/10 dark:bg-primary/15 px-4 py-3.5">
               <div>
                 <p className="text-xs text-muted-foreground mb-0.5">{t("nextPrayer")}</p>
@@ -457,7 +457,7 @@ export default function PrayerTimesWidget() {
           </div>
 
           {/* Next prayer countdown */}
-          {times && nextPrayer && nextPrayer !== "none" && msUntilNext !== null && (
+          {times && nextPrayer && msUntilNext !== null && (
             <div className="mx-5 mb-4 flex items-center justify-between rounded-2xl bg-primary/10 dark:bg-primary/15 px-4 py-3.5">
               <div>
                 <p className="text-xs text-muted-foreground mb-0.5">{t("nextPrayer")}</p>
