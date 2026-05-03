@@ -128,8 +128,16 @@
     "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
   },
   "signIn": {
-    "welcome": "Welcome back",
-    "subtitle": "Sign in to track your qada prayers"
+    "tagline": "Track and make up your missed prayers, one day at a time",
+    "features": {
+      "trackTitle": "Daily Tracking",
+      "trackDesc": "Log your missed prayers and keep an accurate count",
+      "timesTitle": "Prayer Times",
+      "timesDesc": "Accurate prayer times for your location",
+      "stayTitle": "Stay Consistent",
+      "stayDesc": "Build a habit of catching up over time"
+    },
+    "footer": "Your data is private and secure"
   },
   "stats": {
     "comingSoon": "Stats coming soon.",

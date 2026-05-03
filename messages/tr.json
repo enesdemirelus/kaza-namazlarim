@@ -128,8 +128,16 @@
     "description": "Namaz vakitleri, şu anlık sadece Kuzey Amerika bölgesi hesaplamalarını kullanıyor. Farklı tür hesaplamalar yakında eklenecektir"
   },
   "signIn": {
-    "welcome": "Tekrar hoşgeldiniz",
-    "subtitle": "Kaza namazlarınızı takip etmek için giriş yapın"
+    "tagline": "Kaza namazlarınızı gün gün takip edin ve tamamlayın",
+    "features": {
+      "trackTitle": "Günlük Takip",
+      "trackDesc": "Kaza namazlarınızı kaydedin ve sayısını tutun",
+      "timesTitle": "Namaz Vakitleri",
+      "timesDesc": "Konumunuza özel doğru namaz vakitleri",
+      "stayTitle": "İstikrar",
+      "stayDesc": "Zamanla telafi alışkanlığı kazanın"
+    },
+    "footer": "Verileriniz güvende ve gizli"
   },
   "stats": {
     "comingSoon": "İstatistikler yakında.",
