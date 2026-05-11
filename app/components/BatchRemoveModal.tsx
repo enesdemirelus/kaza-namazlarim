@@ -7,13 +7,13 @@ import { format } from "date-fns";
 import { tr as trLocale, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { PRAYER_NAMES, type PrayerName } from "@/lib/types/database";
-import { deleteMissedPrayersBatch, deleteMissedPrayersByCount } from "@/app/actions/prayers";
+import { deleteMissedPrayersBatch, deleteMissedPrayersByCount, deleteAllMissedPrayers } from "@/app/actions/prayers";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { X, CheckCircle2, Sunrise, Sun, Sunset, Moon, AlertTriangle, Loader2, CalendarIcon } from "lucide-react";
 
-type Status = "idle" | "submitting" | "success";
-type Mode = "range" | "count";
+type Status = "idle" | "submitting" | "success" | "submittingAll" | "successAll";
+type Mode = "range" | "count" | "all";
 
 const PRAYER_ICONS: Record<PrayerName, React.ElementType> = {
   Fajr: Sunrise,
@@ -86,33 +86,38 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
     selectedPrayers.size > 0 &&
     status === "idle" &&
     (mode === "range" ? days > 0 : parsedCount > 0);
+  const isIdle = status === "idle";
 
   async function handleSubmit() {
     if (!canSubmit) return;
     setStatus("submitting");
     try {
       if (mode === "range") {
-        if (!startDate || !endDate) {
-          setStatus("idle");
-          return;
-        }
+        if (!startDate || !endDate) { setStatus("idle"); return; }
         await deleteMissedPrayersBatch(
           Array.from(selectedPrayers),
           format(startDate, "yyyy-MM-dd"),
           format(endDate, "yyyy-MM-dd"),
         );
       } else {
-        await deleteMissedPrayersByCount(
-          Array.from(selectedPrayers),
-          parsedCount,
-        );
+        await deleteMissedPrayersByCount(Array.from(selectedPrayers), parsedCount);
       }
       setStatus("success");
       router.refresh();
-      setTimeout(() => {
-        onRemoved?.();
-        onClose();
-      }, 1200);
+      setTimeout(() => { onRemoved?.(); onClose(); }, 1200);
+    } catch {
+      setStatus("idle");
+    }
+  }
+
+  async function handleRemoveAll() {
+    if (!isIdle) return;
+    setStatus("submittingAll");
+    try {
+      await deleteAllMissedPrayers();
+      setStatus("successAll");
+      router.refresh();
+      setTimeout(() => { onRemoved?.(); onClose(); }, 1200);
     } catch {
       setStatus("idle");
     }
@@ -142,42 +147,44 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
 
         <div className="px-6 pb-6 flex flex-col gap-5 overflow-y-auto">
 
-          {/* Prayer multi-selector */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {t("selectPrayers")}
-            </label>
-            <div className="grid grid-cols-5 gap-2">
-              {PRAYER_NAMES.map((name) => {
-                const Icon = PRAYER_ICONS[name];
-                const isSelected = selectedPrayers.has(name);
-                return (
-                  <button
-                    key={name}
-                    onClick={() => togglePrayer(name)}
-                    className={cn(
-                      "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-150",
-                      isSelected
-                        ? "bg-destructive/15 border-destructive/50 text-destructive shadow-sm"
-                        : "bg-muted border-transparent hover:border-border text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    <Icon className="w-5 h-5 shrink-0" />
-                    <span className="text-[11px] font-medium leading-none">
-                      {t(name.toLowerCase() as "fajr" | "dhuhr" | "asr" | "maghrib" | "isha")}
-                    </span>
-                  </button>
-                );
-              })}
+          {/* Prayer multi-selector — hidden in "all" mode */}
+          {mode !== "all" && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t("selectPrayers")}
+              </label>
+              <div className="grid grid-cols-5 gap-2">
+                {PRAYER_NAMES.map((name) => {
+                  const Icon = PRAYER_ICONS[name];
+                  const isSelected = selectedPrayers.has(name);
+                  return (
+                    <button
+                      key={name}
+                      onClick={() => togglePrayer(name)}
+                      className={cn(
+                        "flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all duration-150",
+                        isSelected
+                          ? "bg-destructive/15 border-destructive/50 text-destructive shadow-sm"
+                          : "bg-muted border-transparent hover:border-border text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      <Icon className="w-5 h-5 shrink-0" />
+                      <span className="text-[11px] font-medium leading-none">
+                        {t(name.toLowerCase() as "fajr" | "dhuhr" | "asr" | "maghrib" | "isha")}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Mode toggle */}
           <div className="flex flex-col gap-2">
             <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {t("mode")}
             </label>
-            <div className="grid grid-cols-2 gap-1 p-1 rounded-2xl bg-muted">
+            <div className="grid grid-cols-3 gap-1 p-1 rounded-2xl bg-muted">
               <button
                 type="button"
                 onClick={() => setMode("range")}
@@ -202,74 +209,84 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
               >
                 {t("modeCount")}
               </button>
+              <button
+                type="button"
+                onClick={() => setMode("all")}
+                className={cn(
+                  "py-2 rounded-xl text-xs font-semibold transition-all duration-150",
+                  mode === "all"
+                    ? "bg-destructive text-white shadow-sm"
+                    : "text-muted-foreground hover:text-destructive",
+                )}
+              >
+                {t("modeAll")}
+              </button>
             </div>
             <p className="text-[11px] text-muted-foreground px-0.5">
-              {mode === "range" ? t("modeRangeHint") : t("modeCountHint")}
+              {mode === "range" ? t("modeRangeHint") : mode === "count" ? t("modeCountHint") : t("modeAllHint")}
             </p>
           </div>
 
           {/* Date range pickers */}
           {mode === "range" && (
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {t("dateRange")}
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {/* Start date */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[11px] text-muted-foreground font-medium px-0.5">{t("startDate")}</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="w-full flex items-center gap-2 rounded-xl border bg-muted px-3 py-2.5 text-sm font-medium text-left hover:bg-muted/70 transition-colors">
-                      <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                      <span className={cn("truncate", startDate ? "text-foreground" : "text-muted-foreground")}>
-                        {startDate ? format(startDate, "MMM d, yyyy", { locale: dateLocale }) : "—"}
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={startDate}
-                      onSelect={(d) => {
-                        setStartDate(d);
-                        if (d && endDate && d > endDate) setEndDate(d);
-                      }}
-                      disabled={(date) => date > new Date()}
-                      captionLayout="dropdown"
-                      locale={dateLocale}
-                      defaultMonth={startDate}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              {/* End date */}
-              <div className="flex flex-col gap-1">
-                <span className="text-[11px] text-muted-foreground font-medium px-0.5">{t("endDate")}</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="w-full flex items-center gap-2 rounded-xl border bg-muted px-3 py-2.5 text-sm font-medium text-left hover:bg-muted/70 transition-colors">
-                      <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                      <span className={cn("truncate", endDate ? "text-foreground" : "text-muted-foreground")}>
-                        {endDate ? format(endDate, "MMM d, yyyy", { locale: dateLocale }) : "—"}
-                      </span>
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="end">
-                    <Calendar
-                      mode="single"
-                      selected={endDate}
-                      onSelect={setEndDate}
-                      disabled={(date) => date > new Date() || (startDate ? date < startDate : false)}
-                      captionLayout="dropdown"
-                      locale={dateLocale}
-                      defaultMonth={endDate}
-                    />
-                  </PopoverContent>
-                </Popover>
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                {t("dateRange")}
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] text-muted-foreground font-medium px-0.5">{t("startDate")}</span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center gap-2 rounded-xl border bg-muted px-3 py-2.5 text-sm font-medium text-left hover:bg-muted/70 transition-colors">
+                        <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className={cn("truncate", startDate ? "text-foreground" : "text-muted-foreground")}>
+                          {startDate ? format(startDate, "MMM d, yyyy", { locale: dateLocale }) : "—"}
+                        </span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={startDate}
+                        onSelect={(d) => {
+                          setStartDate(d);
+                          if (d && endDate && d > endDate) setEndDate(d);
+                        }}
+                        disabled={(date) => date > new Date()}
+                        captionLayout="dropdown"
+                        locale={dateLocale}
+                        defaultMonth={startDate}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[11px] text-muted-foreground font-medium px-0.5">{t("endDate")}</span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center gap-2 rounded-xl border bg-muted px-3 py-2.5 text-sm font-medium text-left hover:bg-muted/70 transition-colors">
+                        <CalendarIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                        <span className={cn("truncate", endDate ? "text-foreground" : "text-muted-foreground")}>
+                          {endDate ? format(endDate, "MMM d, yyyy", { locale: dateLocale }) : "—"}
+                        </span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <Calendar
+                        mode="single"
+                        selected={endDate}
+                        onSelect={setEndDate}
+                        disabled={(date) => date > new Date() || (startDate ? date < startDate : false)}
+                        captionLayout="dropdown"
+                        locale={dateLocale}
+                        defaultMonth={endDate}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
             </div>
-          </div>
           )}
 
           {/* Count input */}
@@ -294,27 +311,28 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
             </div>
           )}
 
-          {/* Warning — always shown when there's something to delete */}
-          {estimatedCount > 0 && (
+          {/* Warning for range/count modes */}
+          {mode !== "all" && estimatedCount > 0 && (
             <div className="rounded-2xl px-4 py-3 flex items-start gap-3 bg-destructive/10 border border-destructive/30">
               <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-semibold text-destructive">
                   {mode === "range"
-                    ? t("warningLine", {
-                        days,
-                        prayers: selectedPrayers.size,
-                        count: estimatedCount,
-                      })
-                    : t("warningLineCount", {
-                        n: parsedCount,
-                        prayers: selectedPrayers.size,
-                        count: estimatedCount,
-                      })}
+                    ? t("warningLine", { days, prayers: selectedPrayers.size, count: estimatedCount })
+                    : t("warningLineCount", { n: parsedCount, prayers: selectedPrayers.size, count: estimatedCount })}
                 </p>
-                <p className="text-xs text-destructive/70">
-                  {t("warningNote")}
-                </p>
+                <p className="text-xs text-destructive/70">{t("warningNote")}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Warning for "all" mode */}
+          {mode === "all" && (
+            <div className="rounded-2xl px-4 py-3 flex items-start gap-3 bg-destructive/10 border border-destructive/30">
+              <AlertTriangle className="w-4 h-4 text-destructive shrink-0 mt-0.5" />
+              <div className="flex flex-col gap-0.5">
+                <p className="text-sm font-semibold text-destructive">{t("removeAllWarning")}</p>
+                <p className="text-xs text-destructive/70">{t("warningNote")}</p>
               </div>
             </div>
           )}
@@ -330,30 +348,46 @@ export default function BatchRemoveModal({ open, onClose, onRemoved }: Props) {
             >
               {t("cancel")}
             </button>
-            <button
-              onClick={handleSubmit}
-              disabled={!canSubmit}
-              className={cn(
-                "flex-2 rounded-xl py-3 text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 px-4",
-                !canSubmit
-                  ? "bg-muted text-muted-foreground cursor-not-allowed"
-                  : "bg-destructive text-white hover:bg-destructive/90 shadow-sm",
-              )}
-            >
-              {status === "success" ? (
-                <>
-                  <CheckCircle2 className="w-4 h-4" />
-                  {t("success")}
-                </>
-              ) : status === "submitting" ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="opacity-70">{t("submitting")}</span>
-                </>
-              ) : (
-                t("submit")
-              )}
-            </button>
+
+            {mode !== "all" ? (
+              <button
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                className={cn(
+                  "flex-2 rounded-xl py-3 text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 px-4",
+                  !canSubmit
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "bg-destructive text-white hover:bg-destructive/90 shadow-sm",
+                )}
+              >
+                {status === "success" ? (
+                  <><CheckCircle2 className="w-4 h-4" />{t("success")}</>
+                ) : status === "submitting" ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span className="opacity-70">{t("submitting")}</span></>
+                ) : (
+                  t("submit")
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleRemoveAll}
+                disabled={!isIdle}
+                className={cn(
+                  "flex-2 rounded-xl py-3 text-sm font-semibold transition-all duration-150 flex items-center justify-center gap-2 px-4",
+                  !isIdle
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "bg-destructive text-white hover:bg-destructive/90 shadow-sm",
+                )}
+              >
+                {status === "successAll" ? (
+                  <><CheckCircle2 className="w-4 h-4" />{t("removeAllSuccess")}</>
+                ) : status === "submittingAll" ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span className="opacity-70">{t("removeAllSubmitting")}</span></>
+                ) : (
+                  t("removeAll")
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>

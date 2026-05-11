@@ -250,6 +250,25 @@ export async function deleteMissedPrayersBatch(
   return data?.length ?? 0;
 }
 
+// Deletes ALL non-recovered missed prayers for the signed-in user.
+// Returns the number of rows deleted.
+export async function deleteAllMissedPrayers(): Promise<number> {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const supabase = getSupabase();
+  const { data, error } = await supabase
+    .from("missed_prayers")
+    .delete()
+    .eq("user_id", userId)
+    .eq("is_recovered", false)
+    .select("id");
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/", "layout");
+  return data?.length ?? 0;
+}
+
 // Deletes a missed prayer record.
 export async function deleteMissedPrayer(prayerId: string): Promise<void> {
   const { userId } = await auth();
