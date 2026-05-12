@@ -133,6 +133,32 @@
     "title": "Namaz Vakitleri Hesaplaması",
     "description": "Namaz vakitleri, şu anlık sadece Kuzey Amerika bölgesi hesaplamalarını kullanıyor. Farklı tür hesaplamalar yakında eklenecektir"
   },
+  "onboarding": {
+    "theme": "Tema",
+    "light": "Açık",
+    "dark": "Koyu",
+    "accentColour": "Vurgu Rengi",
+    "prayerMethodTitle": "Namaz Vakitleri",
+    "setup": {
+      "welcome": "Hoş Geldiniz!",
+      "subtitle": "Deneyiminizi kişiselleştirelim",
+      "startTracking": "Takibe Başla"
+    },
+    "methods": {
+      "MuslimWorldLeague": "Müslüman Dünya Birliği",
+      "Egyptian": "Mısır Genel Araştırma Kurumu",
+      "Karachi": "Karaçi Üniversitesi",
+      "UmmAlQura": "Ümmü'l-Kura (Mekke)",
+      "Dubai": "Dubai",
+      "MoonsightingCommittee": "Ay Gözlem Komitesi",
+      "NorthAmerica": "Kuzey Amerika (ISNA)",
+      "Kuwait": "Kuveyt",
+      "Qatar": "Katar",
+      "Singapore": "Singapur",
+      "Tehran": "Tahran",
+      "Turkey": "Türkiye (Diyanet)"
+    }
+  },
   "signIn": {
     "tagline": "Kaza namazlarınızı gün gün takip edin ve tamamlayın",
     "features": {

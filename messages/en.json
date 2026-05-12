@@ -133,6 +133,32 @@
     "title": "Prayer Times Calculation",
     "description": "Prayer times are currently only using North America region calculations. Different types of calculations will be added soon"
   },
+  "onboarding": {
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "accentColour": "Accent Colour",
+    "prayerMethodTitle": "Prayer Times",
+    "setup": {
+      "welcome": "Welcome!",
+      "subtitle": "Let's personalize your experience",
+      "startTracking": "Start Tracking"
+    },
+    "methods": {
+      "MuslimWorldLeague": "Muslim World League",
+      "Egyptian": "Egyptian Authority",
+      "Karachi": "University of Karachi",
+      "UmmAlQura": "Umm Al-Qura (Makkah)",
+      "Dubai": "Dubai",
+      "MoonsightingCommittee": "Moonsighting Committee",
+      "NorthAmerica": "North America (ISNA)",
+      "Kuwait": "Kuwait",
+      "Qatar": "Qatar",
+      "Singapore": "Singapore",
+      "Tehran": "Tehran",
+      "Turkey": "Turkey (Diyanet)"
+    }
+  },
   "signIn": {
     "tagline": "Track and make up your missed prayers, one day at a time",
     "features": {
