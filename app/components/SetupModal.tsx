@@ -211,7 +211,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
                       : "border-border bg-card text-foreground hover:bg-muted",
                   )}
                 >
-                  <span className="line-clamp-2 w-full px-1 text-center text-xs font-bold leading-snug">
+                  <span className="line-clamp-2 w-full px-1 text-center text-xs font-medium leading-snug">
                     {t(`methods.${id}`)}
                   </span>
                 </button>
