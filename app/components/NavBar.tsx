@@ -101,9 +101,7 @@ export default function NavBar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          <div className="relative z-[910]">
-            <LocaleSwitcher />
-          </div>
+          <LocaleSwitcher />
           {/* Settings icon — mobile only */}
           <NavLink
             href="/settings"
