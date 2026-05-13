@@ -237,7 +237,7 @@ export default function PrayerTimesWidget() {
 
   return (
     <>
-      <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-3 shrink-0 md:p-6 md:h-full md:min-h-0">
+      <div id="tour-prayer-times" className="rounded-3xl border bg-card shadow-(--shadow-card) p-3 shrink-0 md:p-6 md:h-full md:min-h-0">
 
         {/* ── MOBILE: tappable compact card ── */}
         <button

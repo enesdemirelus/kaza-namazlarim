@@ -18,23 +18,23 @@
   },
   "actions": {
     "title": "Namazları Yönet",
-    "subtitle": "Kaza namazı ekle veya çıkar",
-    "addOne": "Kaza Namazı Ekle",
+    "subtitle": "Kaza namazı ekle veya kıl",
+    "addOne": "Kaza Ekle",
     "addBatch": "Toplu Ekle",
-    "removeOne": "Kaza Namazı Çıkar",
-    "removeBatch": "Toplu Çıkar"
+    "removeOne": "Kaza Kıl",
+    "removeBatch": "Toplu Kıldım"
   },
   "removeModal": {
-    "title": "Kaza Namazı Sil",
+    "title": "Kaza Kıl",
     "subtitle": "Kayıtlarını görmek için bir namaz seç",
     "selectPrayer": "Namaz seç",
     "entriesTitle": "Kayıtların",
     "noEntries": "Bu namaz türü için kaza kaydı bulunamadı",
-    "removeLatest": "Son Kaydı Sil",
-    "removeLatestHint": "En son eklenen kaydı siler",
-    "removeSelected": "Sil",
-    "removing": "Siliniyor…",
-    "success": "Silindi",
+    "removeLatest": "Son Kılınanı Kıl",
+    "removeLatestHint": "En son eklenen kaydı kılındı olarak işaretler",
+    "removeSelected": "Kıldım",
+    "removing": "Kaydediliyor…",
+    "success": "Kaydedildi",
     "cancel": "İptal",
     "loading": "Yükleniyor…",
     "undated": "Tarih yok",
@@ -45,15 +45,15 @@
     "isha": "Yatsı"
   },
   "addModal": {
-    "title": "Kaza Namazı Ekle",
+    "title": "Kaza Ekle",
     "subtitle": "Kaçırdığın namazı kayıt altına al",
     "selectPrayer": "Namaz seç",
     "selectDate": "Kaçırılan tarih",
     "ignoreDateLabel": "Tarihi hatırlamıyorum",
     "ignoreDateHint": "Tarih yok — namaz tarifsiz eklenir",
-    "submit": "Namaz Ekle",
-    "submitting": "Ekleniyor…",
-    "success": "Namaz eklendi",
+    "submit": "Ekle",
+    "submitting": "Kaydediliyor…",
+    "success": "Kaydedildi",
     "cancel": "İptal",
     "fajr": "Sabah",
     "dhuhr": "Öğle",
@@ -62,14 +62,14 @@
     "isha": "Yatsı"
   },
   "batchRemoveModal": {
-    "title": "Toplu Kaza Sil",
-    "subtitle": "Belirli bir tarih aralığındaki kaza namazlarını sil",
+    "title": "Toplu Kaza Kıl",
+    "subtitle": "Belirli bir tarih aralığındaki kılınan kaza namazlarını kaydet",
     "selectPrayers": "Namazları seç",
     "mode": "Mod",
     "modeRange": "Tarih aralığı",
     "modeCount": "Adet ile",
-    "modeRangeHint": "İki tarih arasındaki namazları sil.",
-    "modeCountHint": "Seçilen her namazın en son eklenen N tanesini sil.",
+    "modeRangeHint": "İki tarih arasındaki kılınan namazları kaydet.",
+    "modeCountHint": "Seçilen her namazın en son eklenen N tanesini kılındı olarak kaydet.",
     "modeAll": "Tümünü Sil",
     "modeAllHint": "Kayıtlarındaki tüm kaza namazlarını kalıcı olarak sil.",
     "count": "Namaz başına adet",
@@ -80,9 +80,9 @@
     "warningLine": "{days} gün × {prayers} namaz türü — en fazla {count} namaz silinecek",
     "warningLineCount": "{n} × {prayers} namaz türü — en fazla {count} namaz silinecek",
     "warningNote": "Bu işlem kalıcıdır ve geri alınamaz.",
-    "submit": "Namazları Sil",
-    "submitting": "Siliniyor…",
-    "success": "Namazlar silindi",
+    "submit": "Kıldım",
+    "submitting": "Kaydediliyor…",
+    "success": "Namazlar kaydedildi",
     "cancel": "İptal",
     "removeAll": "Tümünü Kaldır",
     "removeAllWarning": "Bu işlem tüm kaza namazlarınızı kalıcı olarak siler. Bu geri alınamaz.",
@@ -95,8 +95,8 @@
     "isha": "Yatsı"
   },
   "batchModal": {
-    "title": "Toplu Kaza Ekle",
-    "subtitle": "Belirli bir tarih aralığı için kaza namazı kaydet",
+    "title": "Toplu Ekle",
+    "subtitle": "Belirli bir tarih aralığı için kaçırılan namazları kaydet",
     "selectPrayers": "Namazları seç",
     "mode": "Mod",
     "modeRange": "Tarih aralığı",
@@ -111,9 +111,9 @@
     "summaryLine": "{count} namaz — {days} gün × {prayers} namaz türü",
     "summaryLineCount": "{count} namaz — {n} × {prayers} namaz türü",
     "largeBatchWarning": "Bu çok büyük bir toplu ekleme. Göndermeden önce tarihleri kontrol edin.",
-    "submit": "{count} Namaz Ekle",
-    "submitting": "Ekleniyor…",
-    "success": "{count} namaz eklendi",
+    "submit": "{count} Namazı Kaydet",
+    "submitting": "Kaydediliyor…",
+    "success": "{count} namaz kaydedildi",
     "cancel": "İptal",
     "fajr": "Sabah",
     "dhuhr": "Öğle",
@@ -239,6 +239,41 @@
       "6": "Pazar"
     }
   },
+  "tour": {
+    "next": "İleri",
+    "prev": "Geri",
+    "done": "Anladım",
+    "prayerTimes": {
+      "title": "Namaz Vakitleri",
+      "description": "Konumunuza göre bugünün namaz vakitlerini buradan görebilirsiniz.",
+      "descriptionMobile": "Konumunuza göre bugünün namaz vakitlerini buradan görebilirsiniz. Tam programı görmek için karta dokunun."
+    },
+    "missedPrayers": {
+      "title": "Kaza Sayısı",
+      "description": "Henüz kılmadığın toplam kaza namazının sayısını burada takip edebilirsin. Namaz türlerine göre ayrıştırılmış olarak gösterilir."
+    },
+    "addOne": {
+      "title": "Kaza Ekle",
+      "description": "Bir namazı kaçırdın mı? Buraya tıklayarak kaydet. Hangi namaz olduğunu ve tarihi seçebilirsin."
+    },
+    "addBatch": {
+      "title": "Toplu Ekle",
+      "description": "Birden fazla gün boyunca namaz kaçırdın mı? Tarih aralığı veya sayı girerek hepsini tek seferde ekle."
+    },
+    "removeOne": {
+      "title": "Kaza Kıl",
+      "description": "Bir kaza namazını kıldın mı? Buraya tıklayarak tamamlandı olarak işaretle ve sayını azalt."
+    },
+    "removeBatch": {
+      "title": "Toplu Kıldım",
+      "description": "Birden fazla kazayı birden kıldın mı? Bu butonu kullanarak tek seferde birçok kazayı kaydet."
+    },
+    "navbar": {
+      "title": "Gezinme Çubuğu",
+      "description": "Buradan Ana Sayfa, İstatistikler — ilerlemenizi zaman içinde görmek için — ve uygulamayı kişiselleştirmek için Ayarlar arasında geçiş yapabilirsiniz."
+    },
+    "replayHint": "Bu turu Ayarlar'dan istediğiniz zaman tekrar başlatabilirsiniz."
+  },
   "settings": {
     "accountTitle": "Hesap",
     "accountSubtitle": "Profilinizi yönetin ve çıkış yapın.",
@@ -262,6 +297,9 @@
     "orange": "Turuncu",
     "red": "Kırmızı",
     "amber": "Kehribar",
+    "tourTitle": "Rehberli Tur",
+    "tourSubtitle": "Uygulama tanıtımını tekrar izleyin.",
+    "replayTour": "Turu Tekrarla",
     "prayerMethodTitle": "Namaz Vakti Yöntemi",
     "prayerMethodSubtitle": "Namaz vakitleri için kullanılan hesaplama yöntemi",
     "methods": {

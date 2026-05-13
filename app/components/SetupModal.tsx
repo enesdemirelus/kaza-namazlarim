@@ -115,6 +115,7 @@ export default function SetupModal({ defaultOpen }: { defaultOpen: boolean }) {
         onboardingDone: true,
       });
       setOpen(false);
+      window.dispatchEvent(new Event("knm-onboarding-done"));
     } finally {
       setSaving(false);
     }

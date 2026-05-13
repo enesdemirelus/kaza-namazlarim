@@ -18,23 +18,23 @@
   },
   "actions": {
     "title": "Manage Prayers",
-    "subtitle": "Add or remove qada prayers",
-    "addOne": "Add Qada Prayer",
-    "addBatch": "Add Batch",
-    "removeOne": "Remove Qada Prayer",
-    "removeBatch": "Remove Batch"
+    "subtitle": "Log missed or prayed qada prayers",
+    "addOne": "Log Missed",
+    "addBatch": "Bulk Log Missed",
+    "removeOne": "Log Prayed",
+    "removeBatch": "Bulk Log Prayed"
   },
   "removeModal": {
-    "title": "Remove Qada Prayer",
+    "title": "Log Prayed Prayer",
     "subtitle": "Select a prayer type to see your records",
     "selectPrayer": "Select prayer",
     "entriesTitle": "Your records",
     "noEntries": "No qada prayers found for this type",
-    "removeLatest": "Remove Latest",
-    "removeLatestHint": "Removes the most recent entry",
-    "removeSelected": "Remove",
-    "removing": "Removing…",
-    "success": "Removed",
+    "removeLatest": "Log Latest",
+    "removeLatestHint": "Logs the most recent entry as prayed",
+    "removeSelected": "Log Prayed",
+    "removing": "Logging…",
+    "success": "Logged",
     "cancel": "Cancel",
     "loading": "Loading…",
     "undated": "No date",
@@ -45,15 +45,15 @@
     "isha": "Isha"
   },
   "addModal": {
-    "title": "Add Qada Prayer",
+    "title": "Log Missed Prayer",
     "subtitle": "Log a missed prayer to your record",
     "selectPrayer": "Select prayer",
     "selectDate": "Date missed",
     "ignoreDateLabel": "I don't remember the date",
     "ignoreDateHint": "No date — prayer added without a date",
-    "submit": "Add Prayer",
-    "submitting": "Adding…",
-    "success": "Prayer added",
+    "submit": "Log Missed",
+    "submitting": "Logging…",
+    "success": "Prayer logged",
     "cancel": "Cancel",
     "fajr": "Fajr",
     "dhuhr": "Dhuhr",
@@ -62,14 +62,14 @@
     "isha": "Isha"
   },
   "batchRemoveModal": {
-    "title": "Remove Batch Prayers",
-    "subtitle": "Delete missed prayers across a date range",
+    "title": "Bulk Log Prayed",
+    "subtitle": "Log prayed prayers across a date range",
     "selectPrayers": "Select prayers",
     "mode": "Mode",
     "modeRange": "Date range",
     "modeCount": "By count",
-    "modeRangeHint": "Delete prayers between two dates.",
-    "modeCountHint": "Delete the most recent N entries of each selected prayer.",
+    "modeRangeHint": "Log prayed prayers between two dates.",
+    "modeCountHint": "Log the most recent N entries of each selected prayer as prayed.",
     "modeAll": "Remove All",
     "modeAllHint": "Permanently delete every missed prayer in your record.",
     "count": "Count per prayer",
@@ -80,9 +80,9 @@
     "warningLine": "{days} days × {prayers} prayer types — up to {count} prayers deleted",
     "warningLineCount": "{n} × {prayers} prayer types — up to {count} prayers deleted",
     "warningNote": "This is permanent and cannot be undone.",
-    "submit": "Delete Prayers",
-    "submitting": "Deleting…",
-    "success": "Prayers deleted",
+    "submit": "Log Prayed",
+    "submitting": "Logging…",
+    "success": "Prayers logged",
     "cancel": "Cancel",
     "removeAll": "Remove All",
     "removeAllWarning": "This will permanently delete ALL of your missed prayers. This cannot be undone.",
@@ -95,7 +95,7 @@
     "isha": "Isha"
   },
   "batchModal": {
-    "title": "Add Batch Prayers",
+    "title": "Bulk Log Missed",
     "subtitle": "Log missed prayers across a date range",
     "selectPrayers": "Select prayers",
     "mode": "Mode",
@@ -111,9 +111,9 @@
     "summaryLine": "{count} prayers — {days} days × {prayers} prayer types",
     "summaryLineCount": "{count} prayers — {n} × {prayers} prayer types",
     "largeBatchWarning": "That's a large batch. Double-check the dates before submitting.",
-    "submit": "Add {count} Prayers",
-    "submitting": "Adding…",
-    "success": "{count} prayers added",
+    "submit": "Log {count} Missed",
+    "submitting": "Logging…",
+    "success": "{count} prayers logged",
     "cancel": "Cancel",
     "fajr": "Fajr",
     "dhuhr": "Dhuhr",
@@ -239,6 +239,41 @@
       "6": "Sunday"
     }
   },
+  "tour": {
+    "next": "Next",
+    "prev": "Back",
+    "done": "Got it",
+    "prayerTimes": {
+      "title": "Prayer Times",
+      "description": "See today's prayer times based on your location.",
+      "descriptionMobile": "See today's prayer times based on your location. Tap to expand and view the full daily schedule."
+    },
+    "missedPrayers": {
+      "title": "Your Qada Count",
+      "description": "This tracks the total number of missed prayers you still need to make up, broken down by type."
+    },
+    "addOne": {
+      "title": "Log Missed",
+      "description": "Missed a prayer? Tap here to record it. You can pick which prayer and the date it was missed."
+    },
+    "addBatch": {
+      "title": "Bulk Log Missed",
+      "description": "Missed prayers across multiple days? Add them all at once by date range or count."
+    },
+    "removeOne": {
+      "title": "Log Prayed",
+      "description": "Made up a qada prayer? Tap here to mark it as done and reduce your count."
+    },
+    "removeBatch": {
+      "title": "Bulk Log Prayed",
+      "description": "Made up several prayers at once? Use this to log multiple make-ups in one go."
+    },
+    "navbar": {
+      "title": "Navigation",
+      "description": "Use the bar to switch between Home, Stats — where you can see your progress over time — and Settings to customise the app."
+    },
+    "replayHint": "You can replay this tour anytime from Settings."
+  },
   "settings": {
     "accountTitle": "Account",
     "accountSubtitle": "Manage your profile and sign-out.",
@@ -262,6 +297,9 @@
     "orange": "Orange",
     "red": "Red",
     "amber": "Amber",
+    "tourTitle": "Guided Tour",
+    "tourSubtitle": "Replay the walkthrough of the app.",
+    "replayTour": "Replay Tour",
     "prayerMethodTitle": "Prayer Times Method",
     "prayerMethodSubtitle": "Calculation method used for your prayer times",
     "methods": {

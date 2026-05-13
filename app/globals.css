@@ -214,6 +214,7 @@ html.dark[data-color="amber"]  { --bg-gradient: linear-gradient(145deg,oklch(0.1
 html.dark[data-color="rust"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.028 28) 0%,oklch(0.08 0.014 28) 100%); --primary:oklch(0.44 0.13 28);  --sidebar-primary:oklch(0.72 0.21 28);  --background:oklch(0.10 0.018 28);  --card:oklch(0.16 0.013 28);  }
 html.dark[data-color="sand"]   { --bg-gradient: linear-gradient(145deg,oklch(0.13 0.012 78) 0%,oklch(0.08 0.006 78) 100%); --primary:oklch(0.52 0.06 78);  --sidebar-primary:oklch(0.72 0.12 78);  --background:oklch(0.10 0.008 78);  --card:oklch(0.16 0.006 78);  }
 
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

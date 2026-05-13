@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
-import { Sun, Moon, Check, LogOut, UserCog } from "lucide-react";
+import { Sun, Moon, Check, LogOut, UserCog, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { saveUserSettings } from "@/app/actions/settings";
+import { useRouter } from "@/i18n/navigation";
 
 const CALCULATION_METHODS = [
   "Turkey",
@@ -59,6 +60,7 @@ export default function SettingsPage() {
   const [prayerMethod, setPrayerMethodState] = useState<MethodId>("Turkey");
   const { user } = useUser();
   const { openUserProfile, signOut } = useClerk();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -254,6 +256,20 @@ export default function SettingsPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-center pb-6">
+        <button
+          onClick={async () => {
+            await saveUserSettings({ tourSeen: false });
+            window.dispatchEvent(new Event("knm-replay-tour"));
+            router.push("/");
+          }}
+          className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-border bg-card text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shadow-sm"
+        >
+          <Play className="w-4 h-4" />
+          {t("replayTour")}
+        </button>
       </div>
     </main>
   );

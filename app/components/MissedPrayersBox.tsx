@@ -148,7 +148,7 @@ export default function MissedPrayersBox({ prayers }: { prayers: MissedPrayer[] 
   const views: ViewMode[] = ["all", "monthly", "yearly"];
 
   return (
-    <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 md:p-5 flex-1 min-h-0 flex flex-col gap-3">
+    <div id="tour-missed-prayers" className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 md:p-5 flex-1 min-h-0 flex flex-col gap-3">
 
       {/* Header */}
       <div className="flex items-start justify-between shrink-0">

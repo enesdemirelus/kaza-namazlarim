@@ -10,6 +10,7 @@ export interface UserSettings {
   accentColor: string;
   prayerMethod: string;
   onboardingDone: boolean;
+  tourSeen: boolean;
 }
 
 // Cached per request — multiple layouts can call this in the same render
@@ -21,7 +22,7 @@ const _getUserSettings = cache(async (): Promise<UserSettings | null> => {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from("user_settings")
-    .select("locale, theme, accent_color, prayer_method, onboarding_done")
+    .select("locale, theme, accent_color, prayer_method, onboarding_done, tour_seen")
     .eq("user_id", userId)
     .single();
 
@@ -33,6 +34,7 @@ const _getUserSettings = cache(async (): Promise<UserSettings | null> => {
     accentColor: data.accent_color,
     prayerMethod: data.prayer_method,
     onboardingDone: data.onboarding_done ?? false,
+    tourSeen: data.tour_seen ?? false,
   };
 });
 
@@ -53,6 +55,7 @@ export async function saveUserSettings(settings: Partial<UserSettings>): Promise
       ...(settings.accentColor !== undefined && { accent_color: settings.accentColor }),
       ...(settings.prayerMethod !== undefined && { prayer_method: settings.prayerMethod }),
       ...(settings.onboardingDone !== undefined && { onboarding_done: settings.onboardingDone }),
+      ...(settings.tourSeen !== undefined && { tour_seen: settings.tourSeen }),
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },

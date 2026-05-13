@@ -4,10 +4,12 @@ import { upsertUser } from "@/app/actions/prayers";
 import SettingsSync from "@/app/components/SettingsSync";
 import SetupModal from "@/app/components/SetupModal";
 import { getUserSettings } from "@/app/actions/settings";
+import Tour from "@/app/components/Tour";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
   let onboardingDone = false;
+  let tourSeen = false;
 
   if (userId) {
     try {
@@ -17,6 +19,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     }
     const settings = await getUserSettings();
     onboardingDone = settings?.onboardingDone ?? false;
+    tourSeen = settings?.tourSeen ?? false;
   }
 
   return (
@@ -25,6 +28,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
       <SetupModal defaultOpen={!onboardingDone} />
       <NavBar />
       {children}
+      <Tour initialSeen={tourSeen} onboardingDone={onboardingDone} />
     </div>
   );
 }

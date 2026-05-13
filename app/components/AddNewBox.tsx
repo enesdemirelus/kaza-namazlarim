@@ -32,7 +32,7 @@ export default function AddNewBox() {
 
   return (
     <>
-      <div className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 md:p-5 flex-1 min-h-0 flex flex-col gap-3">
+      <div id="tour-actions" className="rounded-3xl border bg-card shadow-(--shadow-card) p-4 md:p-5 flex-1 min-h-0 flex flex-col gap-3">
         <div className="shrink-0">
           <h2 className="text-sm font-semibold tracking-tight">{t("title")}</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{t("subtitle")}</p>
@@ -42,6 +42,7 @@ export default function AddNewBox() {
           {BUTTONS.map(({ key, Icon, variant }) => (
             <button
               key={key}
+              id={`tour-action-${key}`}
               onClick={() => handleButton(key)}
               className={cn(
                 "flex flex-col items-center justify-center gap-2 rounded-2xl cursor-pointer transition-all w-full h-full",
