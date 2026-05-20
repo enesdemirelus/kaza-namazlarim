@@ -22,10 +22,58 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Kaza Namazlarım",
-  description: "Track your missed prayers",
-};
+const SITE_URL = "https://kazanamazlarim.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  const isTr = locale === "tr";
+
+  const title = isTr ? "Kaza Namazlarım" : "Qada Prayers";
+  const description = isTr
+    ? "Kaza namazlarınızı gün gün takip edin ve tamamlayın. Namaz vakitleri, istatistikler ve daha fazlası."
+    : "Track and make up your missed qada prayers, one day at a time. Prayer times, statistics, and more.";
+
+  const canonical = `${SITE_URL}/${locale}`;
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: title,
+      template: `%s | ${title}`,
+    },
+    description,
+    alternates: {
+      canonical,
+      languages: {
+        tr: `${SITE_URL}/tr`,
+        en: `${SITE_URL}/en`,
+      },
+    },
+    openGraph: {
+      type: "website",
+      url: canonical,
+      siteName: isTr ? "Kaza Namazlarım" : "Qada Prayers",
+      title,
+      description,
+      locale: isTr ? "tr_TR" : "en_US",
+      alternateLocale: isTr ? "en_US" : "tr_TR",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   viewportFit: "cover",
