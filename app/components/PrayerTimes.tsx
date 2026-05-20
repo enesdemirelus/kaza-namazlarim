@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes } from "adhan";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Sunrise, Sun, Sunset, Moon, Clock, SlidersHorizontal, MapPin, X } from "lucide-react";
+import { Sunrise, Sun, SunMedium, SunDim, Sunset, Moon, Clock, SlidersHorizontal, MapPin, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import {
   Dialog,
@@ -40,8 +40,8 @@ function storeCoords(coords: Coordinates) {
 const ICONS: Record<PrayerKey, React.ElementType> = {
   fajr: Sunrise,
   sunrise: Sun,
-  dhuhr: Sun,
-  asr: Sun,
+  dhuhr: SunMedium,
+  asr: SunDim,
   maghrib: Sunset,
   isha: Moon,
 };
