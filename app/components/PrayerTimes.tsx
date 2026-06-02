@@ -175,6 +175,14 @@ export default function PrayerTimesWidget() {
     return new PrayerTimes(coords, tomorrow, params as ConstructorParameters<typeof PrayerTimes>[2]).fajr;
   }, [coords, y, mo, d, prayerMethod]);
 
+  const yesterdayIsha = useMemo(() => {
+    if (!coords) return null;
+    const yesterday = new Date(y, mo, d - 1);
+    const methodFn = (CalculationMethod as Record<string, (() => unknown) | undefined>)[prayerMethod];
+    const params = typeof methodFn === "function" ? methodFn() : CalculationMethod.Turkey();
+    return new PrayerTimes(coords, yesterday, params as ConstructorParameters<typeof PrayerTimes>[2]).isha;
+  }, [coords, y, mo, d, prayerMethod]);
+
   const formatTime = (date: Date) =>
     date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", hour12: locale === "en" });
 
@@ -286,6 +294,22 @@ export default function PrayerTimesWidget() {
                     </>
                   );
                 })()
+              ) : yesterdayIsha ? (
+                <>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-muted">
+                    <Moon className="w-4 h-4 text-muted-foreground" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="text-sm font-bold leading-tight truncate text-muted-foreground">
+                        {t("isha")}
+                      </span>
+                    </div>
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {formatTime(yesterdayIsha)}
+                    </span>
+                  </div>
+                </>
               ) : null}
             </div>
 
